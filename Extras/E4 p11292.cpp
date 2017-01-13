@@ -40,28 +40,32 @@ int main(){
 				vector<int>::iterator iit = knight_vector.begin();
 				sum = 0;
 				for(vector<int>::iterator it = head_vector.begin(); it!=head_vector.end();it++){
-					temp_sum = 0;
-					while(*it > temp_sum){
-                        if((iit == knight_vector.end())){
-							doom = true;
-							break;
-						}
-						temp_sum+=*iit;
-						iit++;
-
+                    if(iit == knight_vector.end()){
+                        doom = true;
+                        break;
+                    }
+					while(*iit < *it){
+                        iit++;
+                        if(iit == knight_vector.end()){
+                            doom = true;
+                            break;
+                        }
 					}
 					if(doom){
-						break;
+                        break;
 					}
-					sum+=temp_sum;
+					else{
+                        sum+=*iit;
+                        iit++;
+					}
 				}
 			}
 		}
 		if(doom){
-			cout << "Loowater is doomed!" << endl;
+			cout << "Loowater is doomed!\n";
 		}
 		else{
-			cout << sum << endl;
+			cout << sum << '\n';
 		}
 	}
 	return(0);
