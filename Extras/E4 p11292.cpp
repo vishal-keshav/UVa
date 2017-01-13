@@ -42,12 +42,13 @@ int main(){
 				for(vector<int>::iterator it = head_vector.begin(); it!=head_vector.end();it++){
 					temp_sum = 0;
 					while(*it > temp_sum){
-						temp_sum+=*iit;
-						iit++;
-						if(iit == knight_vector.end() && (sum+temp_sum) < head_sum){
+                        if((iit == knight_vector.end())){
 							doom = true;
 							break;
 						}
+						temp_sum+=*iit;
+						iit++;
+
 					}
 					if(doom){
 						break;
@@ -63,5 +64,5 @@ int main(){
 			cout << sum << endl;
 		}
 	}
-	return 0;
+	return(0);
 }
