@@ -29,18 +29,27 @@ void construct_new_graph(int new_graph_index, int old_graph_index){
 	queue<struct q_node_new> visits;
 	struct q_node_new push_node;
 	struct q_node_new pop_node;
-
+    int coun=0;
 	push_node.city = old_graph_index;
 	push_node.dist_covered = 0;
 	visits.push(push_node);
 	while(!visits.empty()){
+	    coun++;
+        if(coun>N){
+            coun=0;
+            //break;
+            //cout << new_graph_index << " " << old_graph_index << endl;
+        }
+        //cout << "Hi" << endl;
 		pop_node = visits.front();
 		visits.pop();
 		struct node *iter_node = adj_list[pop_node.city];
 		while(iter_node){
+            //cout << iter_node->city << endl;
 			if(pop_node.dist_covered + iter_node->dist <=600){
 				push_node.city = iter_node->city;
 				push_node.dist_covered = pop_node.dist_covered + iter_node->dist;
+				cout << push_node.city << ":" << push_node.dist_covered << endl;
 				visits.push(push_node);
 				//connect if node is any of the h+2 nodes
 				if(hotel[iter_node->city]){
@@ -77,6 +86,7 @@ int BFS(int start_index, int stop_index){
     visits.push(-1);
     visited[0] = true;
     while(1){
+        //cout << "Hi" << endl;
         popped = visits.front();
         visits.pop();
         if(popped == -1){
@@ -138,6 +148,9 @@ int main(){
 		cin >> m;
 		for(int i=0;i<m;i++){
 			cin >> src >> dest >> dist;
+			if(src == dest){
+                continue;
+			}
 			temp_node = new struct node;
 			temp_node->city = dest;
 			temp_node->dist = dist;
@@ -150,7 +163,17 @@ int main(){
 			temp_node->next = adj_list[dest];
 			adj_list[dest] = temp_node;
 		}
+        for(int i = 1;i<=N;i++){
+			struct node *iter = adj_list[i];
+			cout << i << ": ";
+			while(iter){
+				cout << iter->city << "(" << iter->dist << ") :";
+				iter = iter->next;
+			}
+			cout << endl;
+		}
 		/***********************************************************************************/
+		//Checking the graph
 		//index 0 is starting point, city 1
 		//index h+1 is ending point, city NULL
 		//rest are ordered hotel city
@@ -163,6 +186,12 @@ int main(){
         for(int i=0;i<h+2;i++){
             new_graph[i][i] = false;
         }
+        /*for(int i=0;i<h+2;i++){
+            for(int j=0;j<h+2;j++){
+                cout << new_graph[i][j] << " ";
+            }
+            cout << endl;
+        }*/
 		//Apply BFS to new_graph and find smallest number of edges to reach h+1 from 0
 		int nr_steps = BFS(0,h+1);
 		cout << nr_steps << endl;
