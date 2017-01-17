@@ -5,88 +5,83 @@ using namespace std;
 
 #define INT_MAX 10000000
 
-/*int M,W;
+#define DEBUG 1
+
+int M,W;
 int comp_cost[51];
 int wire_cost[51][51];
 
-int used[51][51];*/
-
-int M=6;
-int comp_cost[7][7] = { {0, 0, 0, 0, 0, 0, 0},
-						{0, 0, 16, 13, 0, 0, 0},
-                        {0, 0, 0, 10, 12, 0, 0},
-                        {0, 0, 4, 0, 0, 14, 0},
-                        {0, 0, 0, 9, 0, 0, 20},
-                        {0, 0, 0, 0, 7, 0, 4},
-                        {0, 0, 0, 0, 0, 0, 0}
-                      };
-
-int used[7][7] = { {0, 0, 0, 0, 0, 0, 0},
-						{0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0}
-                      };
-
-int min_f = INT_MAX;
-int maximum_flow = 0;
-
-bool visited[7] = {false,false,false,false,false,false,false};
-
-bool dfs(int src, int local_min){
-    visited[src] = true;
-	if(src == M){
-		min_f = local_min;
-		maximum_flow+= min_f;
-		visited[src] = false;
+bool max_flow_dfs(int source, int sink,int **graph, int **used, int V, bool *visited, int *maximum_flow, int *aug_path_min, int local_min){
+    visited[source] = true;
+	if(source == sink){
+		*aug_path_min = local_min;
+		*maximum_flow+= local_min;
+		visited[source] = false;
 		return true;
 	}
 	else{
 		//iterate through positive neighbours
 		//1. index is neighbour if connected node has residual_graph i.e. comp_cost[src][dest]>residual_graph[src][dest]
 		//2. index is neighbour if reverse side can be used i.e. residual_graph[dest][src] > 0
-		for(int i=1;i<=M;i++){
-			if(comp_cost[src][i] > used[src][i] && !visited[i]){
-				if(dfs(i,min(local_min,comp_cost[src][i]-used[src][i]))){
+		for(int i=0;i<V;i++){
+			if(graph[source][i] > used[source][i] && !visited[i]){
+				if(max_flow_dfs(i,sink,graph,used,V,visited,maximum_flow,aug_path_min,min(local_min,graph[source][i]-used[source][i]))){
 					//we found M in this path
-					used[src][i]+=min_f;
-					visited[src] = false;
+					used[source][i]+=*aug_path_min;
+					visited[source] = false;
 					return true;
 				}
 			}
-			if(used[i][src]>0 && !visited[i]){
-				if(dfs(i,min(local_min,used[i][src]))){
+			if(used[i][source]>0 && !visited[i]){
+				if(max_flow_dfs(i,sink,graph,used,V,visited,maximum_flow,aug_path_min,min(local_min,used[i][source]))){
 					//we found M in this path
-					used[i][src]-=min_f;
-					visited[src] = false;
+					used[i][source]-= *aug_path_min;
+					visited[source] = false;
 					return true;
 				}
 			}
 		}
-		visited[src] = false;
+		visited[source] = false;
 		return false;
 	}
 }
 
-int max_flow(){
-	//Works on directed graph
-	//Assuming sarting is 1 and ending is M
-	maximum_flow = 0;
-	while(dfs(1,INT_MAX)){
-		//cout << "Starting" << endl;
+/*Input parameters
+1. Directed graph pointer as in adjancy matrix
+2. Number of vertex (including src and dest)
+3. source index (should not have incoming edges)
+4. destination index (should not have outgoing edges)*/
+int max_flow(int **graph, int n, int source, int sink){
+
+	int aug_path_min=0, maximum_flow=0;
+	bool *visited = new bool[n];
+	int **used_flow = new int*[n];
+
+	for(int i=0;i<n;i++){
+		used_flow[i] = new int[n];
+		visited[i] = false;
+		for(int j=0;j<n;j++){
+			used_flow[i][j] = 0;
+		}
+	}
+
+	while(max_flow_dfs(source,sink,graph,used_flow,n,visited,&maximum_flow,&aug_path_min,INT_MAX)){
+
 	}
 	return maximum_flow;
 }
 
-/*int min_cost(void){
-
-}*/
+#ifndef DEBUG
+int min_cost(void){
+    //Implementation goes here
+}
+#endif
 
 int main(){
-	/*cin >> M >> W;
+    int i,j,k;
+	cin >> M >> W;
 	while(M!=0){
+#ifndef DEBUG
 		for(int i=2;i<=M-1;i++){
 			cin >> comp_cost[i];
 		}
@@ -96,8 +91,23 @@ int main(){
 			wire_cost[k][j] = wire_cost[j][k];
 		}
 		cout << min_cost() << endl;
-		cin >> M >> N;
-	}*/
-	cout << max_flow() << endl;
+#endif
+
+#ifdef DEBUG
+		int **directed_graph = new int*[M+1];
+		for(int i=0;i<=M;i++){
+            directed_graph[i] = new int[M+1];
+            for(int j=0;j<=M;j++){
+                directed_graph[i][j] = 0;
+            }
+		}
+		for(int index=0;index<W;index++){
+            cin >> i >> j >> k;
+            directed_graph[i][j] = k;
+		}
+		cout << max_flow(directed_graph,M,1,M) << endl;
+#endif
+		cin >> M >> W;
+	}
 	return(0);
 }
