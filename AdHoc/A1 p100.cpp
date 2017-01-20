@@ -3,7 +3,7 @@
 
 using namespace std;
 
-/*int memo[10000];
+int memo[10000];
 int sequence_len(int n){
 	if(n>=10000){
 		if(n%2!=0){
@@ -26,9 +26,9 @@ int sequence_len(int n){
 			return memo[n];
 		}
 	}
-}*/
+}
 
-int sequence_len(int n){
+/*int sequence_len(int n){
     if(n==1){
         return 1;
     }
@@ -40,17 +40,18 @@ int sequence_len(int n){
             return (1+sequence_len(n/2));
         }
     }
-}
+}*/
 
 int main(){
 	int i,j,maximum;
 	int temp;
-	/*for(int index = 0;index <10000;index++){
+	for(int index = 0;index <10000;index++){
 		memo[index] = 0;
 	}
-	memo[1] = 1;*/
+	memo[1] = 1;
 	while(scanf("%d%d",&i,&j)==2 && i>0 && j>0){
 		maximum = 0;
+		printf("%d %d ",i,j);
 		if(i>j){
             temp = i;
             i = j;
