@@ -13,7 +13,7 @@ void print_spaces(int nr_space){
 void print_words(string word1, string word2){
 	print_spaces(9);
 	cout << word1;
-	print_spaces(24-word1.length());
+	print_spaces(25-word1.length());
 	cout << word2 << endl;
 }
 
@@ -49,7 +49,7 @@ int main(){
 	print_words("NAME","SOUNDEX CODE");
 	while(getline(cin,name)){
 		prev_code = code(name[0]);
-		index = 0;
+		index = 1;
 		soundex[0] = name[0];
 		for(int i=1;i<name.length();i++){
 			current_code = code(name[i]);
@@ -61,9 +61,10 @@ int main(){
 				continue;
 			}
 			else{
-				index++;
+				
 				soundex[index] = to_string(current_code)[0];
 				prev_code = current_code;
+				index++;
 			}
 
 			if(index>3){
@@ -71,8 +72,9 @@ int main(){
 			}
 		}
 		while(index<=3){
-			index++;
+			
 			soundex[index] = '0';
+			index++;
 			
 		}
 		print_words(name,soundex);
