@@ -80,6 +80,6 @@ int main(){
 		print_words(name,soundex);
 	}
 	print_spaces(19);
-	cout << "END OF OUTPUT";
+	cout << "END OF OUTPUT\n";
 	return 0;
 }
