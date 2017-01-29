@@ -4,10 +4,12 @@
 
 using namespace std;
 
+int row0[] = {'`','1','2','3','4','5','6','7','8','9','0','-','='};
 int row1[] = {'Q','W','E','R','T','Y','U','I','O','P','[',']','\\'};
 int row2[] = {'A','S','D','F','G','H','J','K','L',';','\''};
 int row3[] = {'Z','X','C','V','B','N','M',',','.','/'};
 
+int nr_row0 = 13;
 int nr_row1 = 13;
 int nr_row2 = 11;
 int nr_row3 = 10;
@@ -17,7 +19,11 @@ char line[100000];
 
 
 int main(){
-	/*for(int i=0;i<nr_row1;i++){
+	
+	/*for(int i=0;i<nr_row0;i++){
+		cout << (char)row0[i] << " " << (int)row0[i] << endl;
+	}
+	for(int i=0;i<nr_row1;i++){
 		cout << (char)row1[i] << " " << (int)row1[i] << endl;
 	}
 	for(int i=0;i<nr_row2;i++){
@@ -27,6 +33,9 @@ int main(){
 		cout << (char)row3[i] << " " << (int)row3[i] << endl;
 	}*/
 	//Fill hash
+	for(int i=1;i<nr_row0;i++){
+		char_hash[(int)row0[i]] = row0[i-1];
+	}
 	for(int i=1;i<nr_row1;i++){
 		char_hash[(int)row1[i]] = row1[i-1];
 	}
