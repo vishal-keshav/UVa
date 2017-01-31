@@ -10,11 +10,17 @@ int mat[3][3] = {{0,0,0},
 
 char line[4];
 
+void win_inc(int win_value,int *X, int *Y){
+	if(win_value == 3){
+		(*X)++;
+	}
+	if(win_value == -3){
+		(*Y)++;
+	}
+}
+
 bool process(void){
-	/*
-	1. count(X)==count(O) or count(X) == count(O)+1
-	2. nr_wins(X)<=1 && nr_wins(O)<=1 && nr_wins(X)!=nr_wins(O)
-	*/
+
 	int sum =0,win_sum_row,win_sum_column,win_dig_1=0,win_dig_2=0;
 	int nr_wins_X=0,nr_wins_O=0;
 	for(int i=0;i<3;i++){
@@ -27,41 +33,30 @@ bool process(void){
 			win_sum_row+=mat[i][j];
 			win_sum_column+=mat[j][i];
 		}
-		if(win_sum_row == 3){
-			nr_wins_X++;
-		}
-		else if(win_sum_row == -3){
-			nr_wins_O++;
-		}
-		if(win_sum_column == 3){
-			nr_wins_X++;
-		}
-		else if(win_sum_column == -3){
-			nr_wins_O++;
-		}
-	}
-	if(win_dig_1 == 3){
-		nr_wins_X++;
-	}
-	else if(win_dig_1 == -3){
-		nr_wins_O++;
-	}
-	if(win_dig_2 == 3){
-		nr_wins_X++;
-	}
-	else if(win_dig_2 == -3){
-		nr_wins_O++;
+		win_inc(win_sum_row,&nr_wins_X,&nr_wins_O);
+		win_inc(win_sum_column,&nr_wins_X,&nr_wins_O);
 	}
 	if(!(sum==0 || sum==1)){
 		return false;
 	}
-	if(nr_wins_X<=1 && nr_wins_O<=1 && nr_wins_X!=nr_wins_O){
+	win_inc(win_dig_1,&nr_wins_X,&nr_wins_O);
+	win_inc(win_dig_2,&nr_wins_X,&nr_wins_O);
+
+	if(nr_wins_O==1 && sum==1){
+        return false;
+	}
+	if(nr_wins_X==1 && sum==0){
+        return false;
+	}
+
+	if(nr_wins_X*nr_wins_O == 0){
 		return true;
 	}
 	return false;
 }
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T;
 	cin >> T;
 	cin.ignore();
@@ -86,12 +81,6 @@ int main(){
 		else{
 			cout << "no" << endl;
 		}
-		/*for(int i=0;i<3;i++){
-			for(int j=0;j<3;j++){
-				cout << mat[i][j] << " ";
-			}
-			cout << endl;
-		}*/
 		if(T!=0){
 			gets(line);
 		}
