@@ -60,6 +60,7 @@ int main(){
 			//cout << word << endl;
 			music_bit|=enable_bit(hash_map[word]-1);
 		}
+		bool pe_correction = false;
 		for(int note=1;note<=12;note++){
 			left = (int)((int)(valid_notes[note]^music_bit) & (int)valid_notes[note]);
 			right = (int)(valid_notes[note]^music_bit);
@@ -67,7 +68,13 @@ int main(){
 				cout << notes[note-1] << " ";
 			}*/
 			if(left == right){
-                cout << notes[note-1] << " ";
+                if(pe_correction){
+                    cout << " ";
+                }
+                else{
+                    pe_correction = true;
+                }
+                cout << notes[note-1];
 			}
 			//cout << left << " " << right << endl;
 		}
