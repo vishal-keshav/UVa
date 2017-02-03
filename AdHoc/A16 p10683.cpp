@@ -1,6 +1,5 @@
 #include <iostream>
 #include <stdio.h>
-#include <math.h>
 
 using namespace std;
 
@@ -19,7 +18,7 @@ int main(){
 		input = input%100;
 		time+=input;
         input = time*fraction;
-        while(input){
+        /*while(input){
             input = input/10;
             zeros++;
         }
@@ -27,7 +26,8 @@ int main(){
         for(int i=0;i<zeros;i++){
             cout << "0";
         }
-		cout << (int)(time*fraction) << endl;
+		cout << (int)(time*fraction) << endl;*/
+		printf("%07d\n", (int)(time*fraction));
 	}
 	return 0;
 }
