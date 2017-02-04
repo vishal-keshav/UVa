@@ -5,25 +5,28 @@
 
 using namespace std;
 
-char line[10000];
+char temp_char,line[10050];
 
 int main(){
     //freopen("output.txt","w",stdout);
 	int T;
 	cin >> T;
+	cin.ignore();
+	map<char,long long int> my_hash;
 	while(T--){
-		map<char,int> my_hash;
-		char temp_char;
-		int value;
-		int K,M,total_value = 0;
-		float result=0;
+
+		long long int value;
+		long long int K,M,total_value = 0;
+		double result=0;
 		cin >> K;
-		for(int i=0;i<K;i++){
+        cin.ignore();
+		for(long long int i=0;i<K;i++){
 			cin >> temp_char >> value;
+			cin.ignore();
 			my_hash[temp_char] = value;
 		}
 		cin >> M;
-		M++;
+		cin.ignore();
 		while(M--){
 			gets(line);
 			for(int i=0;i<strlen(line);i++){
@@ -32,9 +35,11 @@ int main(){
 				}
 			}
 		}
-		result = (float)(total_value/100.0);
-		printf("%.2f$\n",result);
+		result = (double)(total_value/100.0);
+		printf("%0.2lf$\n",result);
+		my_hash.clear();
 	}
-	printf("\n");
+	//gets(line);
+	//cin >> T;
 	return 0;
 }
