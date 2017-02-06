@@ -28,22 +28,28 @@ void init_hash_value(void){
 string convert_to_roman(string input){
 	string ret;
 	int len = input.length();
-	for(int i=0;i<len;i++){
-		ret.append(hash_num_rom[pow(10,len-i-1)*(input[i]-'0')]);
+	int j = 0,power = 0;
+	while(input[j]=='0'){
+		j++;
+	}
+	power = len - (j+1);
+	for(int i=j;i<len;i++){
+		ret.append(hash_num_rom[pow(10,power)*(input[i]-'0')]);
+		power--;
 	}
 	return ret;
 }
 int convert_to_decimal(string input){
-	int running_sum = 0, length = input.length();
-	char max_literal = input[length-1];
-	running_sum+=hash_rom_num[input[length-1]];
-	for(int i=length-2;i>=0;i--){
-		if(input[i]<max_literal){
-			max_literal = input[i];
+	int running_sum = 0, len = input.length();
+	int max_literal = hash_rom_num[input[len-1]];
+	running_sum+=hash_rom_num[input[len-1]];
+	for(int i=len-2;i>=0;i--){
+		if(hash_rom_num[input[i]] < max_literal){
 			running_sum-=hash_rom_num[input[i]];
 		}
 		else{
 			running_sum+=hash_rom_num[input[i]];
+			max_literal = hash_rom_num[input[i]];
 		}
 	}
 	return running_sum;
