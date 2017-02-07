@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <stdio.h>
+
 using namespace std;
 
 struct vertex{
@@ -9,7 +11,7 @@ struct vertex{
 
 struct vertex points[4];
 
-void swap(struct vertex *a, struct vertex *b){
+void swap_numbers(struct vertex *a, struct vertex *b){
 	struct vertex temp = (*a);
 	(*a) = (*b);
 	(*b) = temp;
@@ -17,10 +19,10 @@ void swap(struct vertex *a, struct vertex *b){
 }
 
 bool same_center(int p1, int p2, int p3, int p4){
-	int center_x1 = (points[p1].x + points[p2].x)/2;
-	int center_y1 = (points[p1].y + points[p2].y)/2;
-	int center_x2 = (points[p3].x + points[p4].x)/2;
-	int center_y2 = (points[p3].y + points[p4].y)/2;
+	int center_x1 = (points[p1].x + points[p2].x);
+	int center_y1 = (points[p1].y + points[p2].y);
+	int center_x2 = (points[p3].x + points[p4].x);
+	int center_y2 = (points[p3].y + points[p4].y);
 	if(center_x1 == center_x2 && center_y1 == center_y2){
 		return true;
 	}
@@ -29,14 +31,14 @@ bool same_center(int p1, int p2, int p3, int p4){
 
 bool type_one(void){
 	if(same_center(0,1,2,3)){
-		swap(&points[1],&points[2]);
+		swap_numbers(&points[1],&points[2]);
 		return true;
 	}
 	if(same_center(0,2,1,3)){
 		return true;
 	}
 	if(same_center(0,3,1,2)){
-		swap(&points[2],&points[3]);
+		swap_numbers(&points[2],&points[3]);
 		return true;
 	}
 	return false;
@@ -57,7 +59,7 @@ bool is_square(void){
 bool is_same_slope(int p1, int p2, int p3, int p4){
 	if((points[p2].y-points[p1].y)*(points[p4].x-points[p3].x)\
 		== ((points[p4].y-points[p3].y)*(points[p2].x-points[p1].x))){
-		return true;	
+		return true;
 	}
 	return false;
 }
@@ -107,6 +109,7 @@ string determine_shape(bool symmetric){
 }
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T,test_case=1;
 	cin >> T;
 	while(T--){
