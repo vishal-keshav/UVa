@@ -7,9 +7,9 @@
 using namespace std;
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T,N,iter=0;
 	string input,word;
-	char permu_word;
 	cin >> T;
 
 	cin.ignore();
@@ -43,6 +43,9 @@ int main(){
 		if(T!=0){
             cout << endl;
 		}
+		/*else{
+            cout << endl;
+		}*/
 	}
 	return 0;
 }
