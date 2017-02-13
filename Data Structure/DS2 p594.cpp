@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(){
-	long int N;
+	long N;
 	string bit_to_string;
 	while(cin >> N){
         bitset<32> num_to_bit(N);
@@ -18,7 +18,7 @@ int main(){
         reverse(bit_to_string.begin(),bit_to_string.end());
 
         bitset<32> result(bit_to_string);
-        cout << N << " converts to "<<(long int)(result.to_ulong()) << endl;
+        cout << N << " converts to "<<(int)(result.to_ulong()) << endl;
 	}
 	return 0;
 }
