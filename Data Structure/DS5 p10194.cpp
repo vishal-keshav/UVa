@@ -34,12 +34,15 @@ bool nr_play_comp(struct team_history elem1, struct team_history elem2){
 	return (elem1.nr_play < elem2.nr_play);
 }
 
-bool lex_cmp(char a, char b){
-	return (a<b);
-}
-
 bool lexo_comp(struct team_history elem1, struct team_history elem2){
-	return lexicographical_compare(elem1.team_name.begin(),elem1.team_name.end(),elem2.team_name.begin(),elem2.team_name.end(),lex_cmp);
+	//return lexicographical_compare(elem1.team_name.begin(),elem1.team_name.end(),elem2.team_name.begin(),elem2.team_name.end(),lex_cmp);
+	for(int i=0; i<elem1.team_name.length();i++){
+        elem1.team_name[i] = tolower(elem1.team_name[i]);
+	}
+    for(int i=0; i<elem1.team_name.length();i++){
+        elem2.team_name[i] = tolower(elem2.team_name[i]);
+	}
+	return (elem1.team_name < elem2.team_name);
 }
 
 int main(){
