@@ -5,6 +5,11 @@
 
 using namespace std;
 
+struct elem{
+    string dna;
+    int inversions;
+};
+
 int merge_inversions(char *input, int s, int m, int e){
 	int i=s,j=m,k=0,ret=0;
 	char temp[e-s + 1];
@@ -59,35 +64,35 @@ int nr_inversion(string input){
         new_input[i] = input[i];
 	}
 	sz = merge_sort_inversions(new_input,0,len-1);
-    /*for(int i=0;i<len;i++){
-        cout << new_input[i];
-	}
-	cout << endl;*/
 	return sz;
 }
 
-bool comp(string a, string b){
-	int a_inversions = nr_inversion(a);
-	int b_inversions = nr_inversion(b);
-	return (a_inversions < b_inversions);
+bool comp(struct elem a, struct elem b){
+	return (a.inversions < b.inversions);
 }
 
 int main(){
-	int T,n,m;
+	int T,n,m,inv;
 	string dna;
 	cin >> T;
 	while(T--){
 		cin >> n >> m;
-		vector<string> vec;
+		vector<struct elem> vec;
 		for(int i=0;i<m;i++){
 			cin >> dna;
-			vec.push_back(dna);
+			inv = nr_inversion(dna);
+			struct elem e;
+			e.dna = dna;
+			e.inversions = inv;
+			vec.push_back(e);
 		}
 		stable_sort(vec.begin(), vec.end(),comp);
 		for(int i=0;i<m;i++){
-			cout << vec[i] << endl;
+			cout << vec[i].dna << endl;
 		}
-		cout << endl;
+		if(T!=0){
+            cout << endl;
+		}
 	}
 	return 0;
 }
