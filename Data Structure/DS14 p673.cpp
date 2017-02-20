@@ -8,8 +8,10 @@ int main(){
 	int N,len;
 	string input;
 	cin >> N;
+	cin.ignore();
 	while(N--){
-		cin >> input;
+		//cin >> input;
+		getline(cin,input);
 		//If empty
 		len = input.length();
 		if(len==0){
