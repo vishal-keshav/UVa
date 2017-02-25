@@ -15,8 +15,9 @@ int side(string direction){
 }
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T,n,t,m;
-	int global_clock,loading,my_side,arrival_time;
+	int global_clock,loading,my_side,arrival_time,loading_nr;
 	string direction;
 
 	cin >> T;
@@ -41,21 +42,25 @@ int main(){
 			}
 			else{
 				//Unload opposite side on its current side
-				while(!loading[1-my_side].empty()){
+				loading_nr=n;
+				while(!loading[1-my_side].empty() && loading_nr>0){
 					cout << global_clock << endl;
 					loading[1-my_side].pop();
+					loading_nr--;
 				}
 				my_side = 1-my_side;
 				global_clock+=t;
+				loading_nr=n;
+				while(!loading[1-my_side].empty() && loading_nr>0){
+					cout << global_clock << endl;
+					loading[1-my_side].pop();
+					loading_nr--;
+				}
+				//global_clock+=t;
 				if(global_clock >arrival_time){
 					loading[side(direction)].push(arrival_time);
 				}
 				else{
-					//Unload this side aswell
-					while(!loading[1-my_side].empty()){
-						cout << global_clock << endl;
-						loading[1-my_side].pop();
-					}
 					loading[side(direction)].push(arrival_time);
 					global_clock = arrival_time;
 					if(my_side!=side(direction)){
@@ -65,17 +70,20 @@ int main(){
 				}
 			}
 		}
-		//Unload opposite side
-		while(!loading[1-my_side].empty()){
-			cout << global_clock << endl;
-			loading[1-my_side].pop();
+
+		//Uloading rest of the cars in turn
+		while(!loading[0].empty() || !loading[1].empty()){
+			loading_nr = n;
+			while(!loading[1-my_side].empty() && loading_nr>0){
+				cout << global_clock << endl;
+				loading[1-my_side].pop();
+				loading_nr--;
+			}
+			my_side = 1-my_side;
+			global_clock+=t;
 		}
-		my_side = 1-my_side;
-		global_clock+=t;
-		//Unload opposite side
-		while(!loading[1-my_side].empty()){
-			cout << global_clock << endl;
-			loading[1-my_side].pop();
+		if(T!=0){
+            cout << endl;
 		}
 	}
 	return 0;
