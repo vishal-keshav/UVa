@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAX_INT 10000000
+#define MAX_INT 1000000000
 
 int maximum(int a, int b){
     if(a>b){
@@ -37,7 +37,7 @@ bool comp(struct arrival elem1, struct arrival elem2){
 	return (elem1.index < elem2.index);
 }
 int main(){
-    //freopen("output.txt","w",stdout);
+    freopen("output.txt","w",stdout);
 	int T,n,t,m;
 	int global_clock,loading,my_side,arrival_time,loading_nr;
 	int my_side_top,other_side_top;
@@ -97,7 +97,7 @@ int main(){
 				else{
 					other_side_top = MAX_INT;
 				}
-				if(my_side_top < other_side_top){
+				if(my_side_top <= other_side_top){
 					global_clock = loading[my_side].front().arrival_time;
 				}
 				else{
