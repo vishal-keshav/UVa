@@ -6,21 +6,25 @@
 
 using namespace std;
 
-//#define DEBUG
-
 //Union find quick implementation
 vector<int> uf_set_vec(201);
-void init_set(int size){
-	uf_set_vec.resize(size);
-	for(int i=0;i<size;i++){
+void init_set(int _size){
+	uf_set_vec.resize(_size);
+	for(int i=0;i<_size;i++){
 		uf_set_vec[i] = i;
 	}
 }
 int find_set(int node){
-	return (uf_set_vec[node]==node?node:uf_set_vec[node] = find_set(uf_set_vec[node]));
+	if(uf_set_vec[node]==node){
+        return node;
+	}
+	else{
+        uf_set_vec[node] = find_set(uf_set_vec[node]);
+        return uf_set_vec[node];
+	}
 }
 void union_set(int node1, int node2){
-	uf_set_vec[find_set(node1)] = find_set(uf_set_vec[node2]);
+	uf_set_vec[find_set(node1)] = find_set(node2);
 	return;
 }
 
@@ -45,28 +49,7 @@ bool is_common(string input){
 }
 
 int main(){
-#ifdef DEBUG //Debugging union find
-	init_set(10);
-    union_set(0,1);
-    union_set(2,3);
-    union_set(4,5);
-    if(is_same_set(3,2)){
-        cout << "2 and 3 lies in same set" << endl;
-    }
-    if(!is_same_set(1,4)){
-        cout << "1 and 4 lies in different sets" << endl;
-    }
-    union_set(0,5);
-    if(is_same_set(1,4)){
-        cout << "1 and 4 now lies in same set" << endl;
-    }
-    /*cout << my_sets.size_of_set(1) << " is the size of set for 1" << endl;
-    cout << my_sets.size_of_set(5) << " is the size of set for 5" << endl;
-    cout << my_sets.size_of_set(2) << " is the size of set for 2" << endl;
-    cout << my_sets.size_of_set(8) << " is the size of set for 8" << endl;
-    cout << my_sets.number_of_sets() << " is the total number of sets right now" << endl;*/
-#endif
-    freopen("output.txt","w",stdout);
+    //freopen("output.txt","w",stdout);
 	int T;
 	while(cin >> T){
 		vector<string> dna1,dna2;
@@ -80,7 +63,7 @@ int main(){
 			dna2.push_back(input);
 		}
 		bool possible = true;
-		init_set(T+1);
+		init_set(200);
 		map<int,char> mut;
 		for(int i=0;i<T;i++){
 			//Case 1: both common dna
@@ -99,7 +82,9 @@ int main(){
 
 				int dna1_mut = get_mut_elem(dna1[i]);
 				int dna2_mut = get_mut_elem(dna2[i]);
+				char id;
 				//cout << "both uncommon: "<<dna1_mut << " " << dna2_mut << endl;
+				//cout << "to check " << find_set(dna1_mut) << " " << find_set(dna2_mut) << endl;
 				//If both have not been assigned a common element
 				if(mut.count(find_set(dna1_mut))==0 && mut.count(find_set(dna2_mut))==0){
 					//Just put them together in set
@@ -111,16 +96,20 @@ int main(){
 				else if(mut.count(find_set(dna1_mut))==0){
 					//cout << "Case 2" << endl;
 					if(!is_same_set(dna1_mut,dna2_mut)){
+                        id = mut[find_set(dna2_mut)];
 						union_set(dna1_mut,dna2_mut);
-						mut[find_set(dna1_mut)] = mut[find_set(dna2_mut)];
+						mut[find_set(dna1_mut)] = id;
+                        mut[find_set(dna2_mut)] = id;
 					}
 
 				}
 				else if(mut.count(find_set(dna2_mut))==0){
 					//cout << "Case 3" << endl;
 					if(!is_same_set(dna1_mut,dna2_mut)){
+                        id = mut[find_set(dna1_mut)];
 						union_set(dna1_mut,dna2_mut);
-						mut[find_set(dna2_mut)] = mut[find_set(dna1_mut)];
+						mut[find_set(dna1_mut)] = id;
+						mut[find_set(dna2_mut)] = id;
 					}
 
 				}
@@ -132,7 +121,9 @@ int main(){
 					}
 					else{
 						if(!is_same_set(dna1_mut,dna2_mut)){
+                            id = mut[find_set(dna1_mut)];
 							union_set(dna1_mut,dna2_mut);
+                            mut[find_set(dna1_mut)] = id;
 						}
 					}
 				}
@@ -142,9 +133,11 @@ int main(){
 				//cout << "alternate: "<<dna1[i][0] << " " << dna2[i][0] << endl;
 				if(is_common(dna1[i])){
 					int dna2_mut = get_mut_elem(dna2[i]);
+					//cout << "Subcase1 " << dna2_mut << endl;
 					if(mut.count(find_set(dna2_mut))==0){
 						//Assign
 						mut[find_set(dna2_mut)] = dna1[i][0];
+						//cout << mut[find_set(dna2_mut)] << " at " << find_set(dna2_mut) << " " << find_set(dna2_mut)<< endl;
 					}
 					else{
 						if(mut[find_set(dna2_mut)] != dna1[i][0]){
@@ -158,9 +151,11 @@ int main(){
 				}
 				else{
 					int dna1_mut = get_mut_elem(dna1[i]);
+					//cout << "Subcase2 " << dna1_mut << endl;
 					if(mut.count(find_set(dna1_mut))==0){
 						//Assign
 						mut[find_set(dna1_mut)] = dna2[i][0];
+						//cout << mut[find_set(dna1_mut)] << " at " << find_set(dna1_mut)<< endl;
 					}
 					else{
 						if(mut[find_set(dna1_mut)] != dna2[i][0]){
@@ -177,7 +172,7 @@ int main(){
 		if(possible){
 			cout << "YES" << endl;
 			//Print minimal mutation
-			for(int i=1;i<=T;i++){
+			for(int i=0;i<=200;i++){
 				if(mut.count(find_set(i))!=0){
 					cout << i << " " << mut[find_set(i)] << endl;
 				}
