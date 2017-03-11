@@ -51,7 +51,14 @@ bool is_common(string input){
 int main(){
     //freopen("output.txt","w",stdout);
 	int T;
+	bool space = false;
 	while(!cin.eof() && cin >> T){
+        if(!space){
+            space = true;
+        }
+        else{
+            cout << endl;
+        }
 		vector<string> dna1,dna2;
 		string input;
 		for(int i=0;i<T;i++){
@@ -181,7 +188,6 @@ int main(){
 		else{
 			cout << "NO" << endl;
 		}
-		cout << endl;
 	}
 	return 0;
 }
