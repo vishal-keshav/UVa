@@ -51,7 +51,7 @@ bool is_common(string input){
 int main(){
     //freopen("output.txt","w",stdout);
 	int T;
-	while(cin >> T){
+	while(!cin.eof() && cin >> T){
 		vector<string> dna1,dna2;
 		string input;
 		for(int i=0;i<T;i++){
