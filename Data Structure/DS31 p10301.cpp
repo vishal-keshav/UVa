@@ -1,10 +1,19 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-#include <algorithm>
 #include <math.h>
 
 using namespace std;
+
+float min_float(float a, float b){
+    return (a<b?a:b);
+}
+float max_float(float a, float b){
+    return (a<b?b:a);
+}
+int max_int(int a, int b){
+    return (a<b?b:a);
+}
 
 struct ring{
 	float x,y,r;
@@ -36,9 +45,9 @@ void uf_union(int node1, int node2){
 	}
 	int set_size1 = uf_size[uf_find(node1)];
 	int set_size2 = uf_size[uf_find(node2)];
-	uf_set[node1] = uf_find(node2);
+	uf_set[uf_find(node1)] = uf_find(node2);
 	uf_size[uf_find(node1)] = set_size1+set_size2;
-	uf_max_size = max(uf_max_size, uf_size[uf_find(node1)]);
+	uf_max_size = max_int(uf_max_size, uf_size[uf_find(node1)]);
 }
 
 float distance(float x1, float y1, float x2, float y2){
@@ -46,42 +55,21 @@ float distance(float x1, float y1, float x2, float y2){
 }
 
 bool is_intersecting(struct ring e1, struct ring e2){
-    //Case 1: Circles are in one another
-    if(e1.r>e2.r){
-        if(e1.r > distance(e1.x,e1.y,e2.x,e2.y)){
-            if(distance(e1.x,e1.y,e2.x,e2.y) + e2.r > e1.r){
-                return true;
-            }
-            else{
-                return false;
-            }
+    //If intersecting a infinite points
+    if(e1.x == e2.x && e1.y == e2.y && e1.r == e2.r){
+        return true;
+    }
+    if(distance(e1.x,e1.y,e2.x,e2.y)<= e1.r+e2.r){
+        //Case when circle ids within the other circle has to be taken
+        if(distance(e1.x,e1.y,e2.x,e2.y) >= max_float(e1.r,e2.r) - min_float(e1.r,e2.r)){
+            return true;
         }
         else{
-            if(distance(e1.x, e1.y, e2.x, e2.y) < e1.r + e2.r){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return false;
         }
     }
     else{
-        if(e2.r > distance(e1.x,e1.y,e2.x,e2.y)){
-            if(distance(e1.x,e1.y,e2.x,e2.y) + e1.r > e2.r){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-        else{
-            if(distance(e1.x, e1.y, e2.x, e2.y) < e1.r + e2.r){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
+        return false;
     }
 }
 
@@ -105,7 +93,10 @@ int main(){
 				}
 			}
 		}
-		if(uf_max_size==1){
+		if(T==0){
+            cout << "The largest component contains " << "0" << " rings." << endl;
+		}
+		else if(uf_max_size==1){
 			cout << "The largest component contains " << uf_max_size << " ring." << endl;
 		}
 		else{
