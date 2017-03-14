@@ -164,6 +164,7 @@ int main(){
 	while(M--){
 		cin >> N;
 		init_set(201);
+		vector<int> vec;
 		//map<int,int> enemy_of;
 		enemy_of.clear();
 		set<int> invited, not_invited;
@@ -171,9 +172,15 @@ int main(){
 			cin >> p;
 			for(int j=0;j<p;j++){
 				cin >> E;
+				if(E>N){
+                    continue;
+				}
 				if(!setEnemies(i,E)){
-					not_invited.insert(i);
-					not_invited.insert(E);
+
+					//not_invited.insert(i);
+					//not_invited.insert(E);
+					vec.push_back(i);
+                    vec.push_back(E);
 #ifdef DEBUG
                     cout << "Inconsistancy found" << endl;
 #endif
@@ -191,6 +198,12 @@ int main(){
             }
         }
 #endif
+        for(vector<int>::iterator it = vec.begin(); it!=vec.end();it++){
+            not_invited.insert(uf_find(*it));
+            if(enemy_of.count(uf_find(*it))!=0){
+                not_invited.insert(uf_find(enemy_of[uf_find(*it)]));
+            }
+        }
 		int total_invited = 0;
 		set<int>::iterator iter_invited;
 		set<int>::iterator iter_not_invited;
