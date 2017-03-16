@@ -20,12 +20,17 @@ void init_quad(int node, int x1, int y1, int x2, int y2);
 void init_quad_tree(int nr_elem){
 	int tree_size = ((int)(4*pow(4.0, floor((log((double)(nr_elem*nr_elem))/log(4.0))+1))) - 1)/3;
 	cout << tree_size << endl;
-	quad_tree_min.resize(tree_size,0);
-	quad_tree_max.resize(tree_size,0);
-	init_quad(0, 0, nr_elem-1, 0, nr_elem-1);
+	quad_tree_min.resize(tree_size,INT_MAXIMUM);
+	quad_tree_max.resize(tree_size,INT_MINIMUM);
+	init_quad(0, 0, 0, nr_elem-1, nr_elem-1);
 }
 void init_quad(int node, int x1, int y1, int x2, int y2){
 	/*For square city, just the checking of x1==x2 is enough*/
+
+	if(x1>x2 || y1>y2){
+        return;
+	}
+	cout << "("<<x1 << "," << y1 << ") (" <<x2 << "," << y2 << ")" << endl;
 	if(x1==x2 && y1==y2){
 		quad_tree_min[node] = city_population[x1][y1];
 		quad_tree_max[node] = city_population[x1][y1];
@@ -149,12 +154,15 @@ int main(){
 	}
 #endif
 	init_quad_tree(N);
+	for(int i=0;i<85;i++){
+        cout << quad_tree_min[i] << " " << quad_tree_max[i] << endl;
+	}
 	cin >> Q;
 	while(Q--){
 		cin >> operation;
 		if(operation=='q'){
 			cin >> query_x1 >> query_y1 >> query_x2 >> query_y2;
-			cout << query_max(0,0,N-1,0,N-1,query_x1-1,query_y1-1,query_x2-1,query_y2-1)<<" "<<query_min(0,0,N-1,0,N-1,query_x1-1,query_y1-1,query_x2-1,query_y2-1) << endl;
+			cout << query_max(0,0,0,N-1,N-1,query_x1-1,query_y1-1,query_x2-1,query_y2-1)<<" "<<query_min(0,0,0,N-1,N-1,query_x1-1,query_y1-1,query_x2-1,query_y2-1) << endl;
 		}
 		else{
 			//Do nothing
