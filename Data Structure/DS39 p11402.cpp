@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define DEBUG 1
+//#define DEBUG 1
 
 string pirates;
 
@@ -45,57 +45,7 @@ void init_seg(int node, int s_index, int e_index){
 	return;
 }
 
-/*int lazy_query(int node, int s, int e, int qs, int qe){
-    //cout << "QUERY " << s << " " << e << endl;
-	if(qs>e || qe<s || s>e){
-		return -1;
-	}
-	if(pending[node]!=-1){
-		if(pending[node]==0){
-			seg_tree[node] = (e-s +1);
-		}
-		else if(pending[node]==1){
-			seg_tree[node] = 0;
-		}
-		else if(pending[node] == 2){
-			seg_tree[node] = (e-s +1) - seg_tree[node];
-		}
-		else{
-            //Do nothing
-		}
-		//lazy_operation(2*node, s, (s+e)/2, qs, qe, pending[node]);
-		//lazy_operation(2*node +1, (s+e)/2 +1, e, qs, qe, pending[node]);
-		pending[node] = -1;
-	}
-
-	if(s>=qs && e<=qe){
-		return seg_tree[node];
-	}
-	else{
-		int m = (s+e)/2;
-		int left = lazy_query(2*node, s,m,qs,qe);
-		int right = lazy_query(2*node+1, m+1,e,qs,qe);
-		if(left==-1){
-			return right;
-		}
-		if(right==-1){
-			return left;
-		}
-		return left+right;
-	}
-}*/
-
-/*
- * If current segment tree node has any pending update, then first update that pending
- * update to current node.
- *
- * If the interval represented by current node lies completely in the interval to
- * update, then update the current node and update the lazy[] array for children nodes.
- *
- * If the interval represented by current node overlaps with the interval to update,
- * then update the nodes as usual.
- */
-
+////////////////////Helper Function//////////////////////////////
 int get_new_op(int node, int op){
 	if(op==0 || op==1){
 		return op;
@@ -117,7 +67,7 @@ int get_new_op(int node, int op){
 	else{
 		return pending[node];
 	}
-}	
+}
 
 int get_sum(int node, int s, int e, int qs, int qe, int op){
 	if(op == -1){
@@ -132,7 +82,7 @@ int get_sum(int node, int s, int e, int qs, int qe, int op){
 	else{
 		return ((e-s +1) - seg_tree[node]);
 	}
-}	
+}
 
 void change(int node, int s, int e, int qs, int qe, int op){
 	if(op=-1){
@@ -147,7 +97,7 @@ void change(int node, int s, int e, int qs, int qe, int op){
 		new_op = get_new_op(2*node +1, op);
 		pending[2*node +1] = new_op;
 	}
-}	
+}
 
 void propagate(int node, int s, int e, int qs, int qe, int op){
 	if(op==-1){
@@ -157,17 +107,55 @@ void propagate(int node, int s, int e, int qs, int qe, int op){
 		change(node, s, e, qs, qe, op);
 		pending[node] = -1;
 	}
-}	
+}
+///////////////////////////////////////////////////////////////////
+
+int lazy_query(int node, int s, int e, int qs, int qe){
+	if(qs>e || qe<s || s>e){
+		return 0;
+	}
+
+	if(s<=qs && qe<=e){
+		if(pending[node]==0){
+			return (qe-qs +1);
+		}
+		if(pending[node]==1){
+			return 0;
+		}
+	}
+
+	if(qs<=s && e<=qe){
+		propagate(node, s, e, qs, qe, pending[node]);
+		return seg_tree[node];
+	}
+	else{
+		propagate(node, s, e, qs, qe, pending[node]);
+		int left = lazy_query(2*node, s, (s+e)/2 , qs, qe);
+		int right = lazy_query(2*node +1, (s+e)/2 +1, e, qs, qe);
+		return (left+right);
+	}
+}
+
+/*
+ * If current segment tree node has any pending update, then first update that pending
+ * update to current node.
+ *
+ * If the interval represented by current node lies completely in the interval to
+ * update, then update the current node and update the lazy[] array for children nodes.
+ *
+ * If the interval represented by current node overlaps with the interval to update,
+ * then update the nodes as usual.
+ */
+
 
 void lazy_update(int node, int s, int e, int qs, int qe, int op){
-    //cout << "UPDATE: "<<s << " " << e << endl;
 	if(s>e || (s>qe || e<qs)){
 		return;
 	}
 	propagate(node,s,e,qs,qe,pending[node]);
-	
+
 	if(s>=qs && e<=qe){
-		seg_tree[node] = 
+		change(node,s,e,qs,qe,op);
 		return;
 	}
 	int mid = (s+e)/2;
