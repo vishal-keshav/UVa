@@ -6,13 +6,14 @@
 
 using namespace std;
 
-//#define DEBUG 1
+#define DEBUG 1
 
 string pirates;
 
 vector<int> seg_tree;
 vector<int> pending;
 
+void lazy_update(int node, int s, int e, int qs, int qe, int op);
 void init_seg(int node, int s, int e);
 void init_seg_tree(void){
 	int nr_elem = pirates.length();
@@ -44,14 +45,11 @@ void init_seg(int node, int s_index, int e_index){
 	return;
 }
 
-int lazy_query(int node, int s, int e, int qs, int qe){
-    cout << "QUERY " << s << " " << e << endl;
+/*int lazy_query(int node, int s, int e, int qs, int qe){
+    //cout << "QUERY " << s << " " << e << endl;
 	if(qs>e || qe<s || s>e){
 		return -1;
 	}
-	/*
-	 * Lazy update, changes query
-	 */
 	if(pending[node]!=-1){
 		if(pending[node]==0){
 			seg_tree[node] = (e-s +1);
@@ -59,13 +57,14 @@ int lazy_query(int node, int s, int e, int qs, int qe){
 		else if(pending[node]==1){
 			seg_tree[node] = 0;
 		}
-		else{
+		else if(pending[node] == 2){
 			seg_tree[node] = (e-s +1) - seg_tree[node];
 		}
-		if(s!=e){
-			pending[2*node] = pending[node];
-			pending[2*node+1] = pending[node];
+		else{
+            //Do nothing
 		}
+		//lazy_operation(2*node, s, (s+e)/2, qs, qe, pending[node]);
+		//lazy_operation(2*node +1, (s+e)/2 +1, e, qs, qe, pending[node]);
 		pending[node] = -1;
 	}
 
@@ -82,10 +81,9 @@ int lazy_query(int node, int s, int e, int qs, int qe){
 		if(right==-1){
 			return left;
 		}
-		//seg_tree[node] = left+right;
 		return left+right;
 	}
-}
+}*/
 
 /*
  * If current segment tree node has any pending update, then first update that pending
@@ -97,60 +95,85 @@ int lazy_query(int node, int s, int e, int qs, int qe){
  * If the interval represented by current node overlaps with the interval to update,
  * then update the nodes as usual.
  */
-void lazy_update(int node, int s, int e, int qs, int qe, int op){
-    cout << "UPDATE: "<<s << " " << e << endl;
-    if(pending[node]!=-1){
-		//Update on this node is required
-		if(pending[node]==0){
-			//Convert everyone to 1
-			seg_tree[node] = (e-s +1);
+
+int get_new_op(int node, int op){
+	if(op==0 || op==1){
+		return op;
+	}
+	else if(op == 2){
+		if(pending[node] == -1){
+			return 2;
 		}
-		else if(pending[node]==1){
-			//Convert everyone to 0
-			seg_tree[node] = 0;
+		else if(pending[node] == 0){
+			return 1;
+		}
+		else if(pending[node] == 1){
+			return 0;
 		}
 		else{
-			//Invert pirates
-			seg_tree[node] = ((e-s +1) - seg_tree[node]);
+			return -1;
 		}
-		//Now, make childs pending for update
-		if(s!=e){
-			if(pending[2*node]!=-1){
-				lazy_update(2*node, s, (s+e)/2, qs,qe, pending[node]);
-			}
-			//pending[2*node] = op;
-			if(pending[2*node+1]!=-1){
-				lazy_update(2*node+1, (s+e)/2+1, e, qs,qe, pending[node]);
-			}
-			//pending[2*node+1] = op;
-		}
+	}
+	else{
+		return pending[node];
+	}
+}	
+
+int get_sum(int node, int s, int e, int qs, int qe, int op){
+	if(op == -1){
+		return seg_tree[node];
+	}
+	else if(op == 0){
+		return (e-s +1);
+	}
+	else if(op == 1){
+		return 0;
+	}
+	else{
+		return ((e-s +1) - seg_tree[node]);
+	}
+}	
+
+void change(int node, int s, int e, int qs, int qe, int op){
+	if(op=-1){
+		return;
+	}
+	int sum = get_sum(node, s, e, qs, qe, op);
+	seg_tree[node] = sum;
+	//If not a leaf node, propagate action to child node
+	if(s!=e){
+		int new_op = get_new_op(2*node, op);
+		pending[2*node] = new_op;
+		new_op = get_new_op(2*node +1, op);
+		pending[2*node +1] = new_op;
+	}
+}	
+
+void propagate(int node, int s, int e, int qs, int qe, int op){
+	if(op==-1){
+		return;
+	}
+	else{
+		change(node, s, e, qs, qe, op);
 		pending[node] = -1;
-		/*lazy_update(2*node, s, (s+e)/2, qs, qe, op);
-		lazy_update(2*node+1, (s+e)/2 +1, e, qs, qe, op);*/
 	}
-	if(s>e || s>qe || e<qs){
+}	
+
+void lazy_update(int node, int s, int e, int qs, int qe, int op){
+    //cout << "UPDATE: "<<s << " " << e << endl;
+	if(s>e || (s>qe || e<qs)){
 		return;
 	}
+	propagate(node,s,e,qs,qe,pending[node]);
+	
 	if(s>=qs && e<=qe){
-		if(op==0){
-			seg_tree[node] = (e-s +1);
-		}
-		else if(op==1){
-			seg_tree[node] = 0;
-		}
-		else{
-			seg_tree[node] = ((e-s +1) - seg_tree[node]);
-		}
-		if(s!=e){
-			pending[2*node] = op;
-			pending[2*node + 1] = op;
-		}
+		seg_tree[node] = 
 		return;
 	}
-	int m = (s+e)/2;
-	lazy_update(2*node,s,m,qs,qe,op);
-	lazy_update(2*node+1,m+1,e,qs,qe,op);
-	seg_tree[node] = seg_tree[2*node]+seg_tree[2*node+1];
+	int mid = (s+e)/2;
+	lazy_update(2*node, s, mid, qs, qe, op);
+	lazy_update(2*node +1, mid+1, e, qs, qe, op);
+	seg_tree[node] = seg_tree[2*node] + seg_tree[2*node +1];
 }
 
 void update(int node, int s, int e, int qs, int qe, int op){
@@ -240,16 +263,46 @@ int main(){
 			cin >> operation >> a >> b;
 			switch(operation){
 				case 'F':
-                    update(1,0,nr_elem-1,a,b,0);
+                    lazy_update(1,0,nr_elem-1,a,b,0);
+#ifdef DEBUG
+					for(vector<int>::iterator it = seg_tree.begin(); it!=seg_tree.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl;
+					for(vector<int>::iterator it = pending.begin(); it!=pending.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl << endl;
+#endif
 					break;
 				case 'E':
-                    update(1,0,nr_elem-1,a,b,1);
+                    lazy_update(1,0,nr_elem-1,a,b,1);
+#ifdef DEBUG
+					for(vector<int>::iterator it = seg_tree.begin(); it!=seg_tree.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl;
+					for(vector<int>::iterator it = pending.begin(); it!=pending.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl << endl;
+#endif
 					break;
 				case 'I':
-                    update(1,0,nr_elem-1,a,b,2);
+                    lazy_update(1,0,nr_elem-1,a,b,2);
+#ifdef DEBUG
+					for(vector<int>::iterator it = seg_tree.begin(); it!=seg_tree.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl;
+					for(vector<int>::iterator it = pending.begin(); it!=pending.end(); it++){
+						cout << (*it) << " ";
+					}
+					cout << endl << endl;
+#endif
 					break;
 				case 'S':
-					cout << "Q" << nr_question << ": " <<query(1,0,nr_elem-1,a,b) << endl;
+					cout << "Q" << nr_question << ": " <<lazy_query(1,0,nr_elem-1,a,b) << endl;
                     nr_question++;
 					break;
 			}
