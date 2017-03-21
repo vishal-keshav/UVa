@@ -18,7 +18,10 @@ void init_seg(int node, int s, int e);
 void init_seg_tree(void){
 	int nr_elem = pirates.length();
 	int tree_size = (int)(2*pow(2.0, floor((log((double)nr_elem)/log(2.0)) + 1)));
+	seg_tree.clear();
 	seg_tree.resize(tree_size,9999);
+
+	pending.clear();
 	pending.resize(tree_size,-1);
 	init_seg(1, 0, nr_elem-1);
 }
@@ -85,7 +88,7 @@ int get_sum(int node, int s, int e, int qs, int qe, int op){
 }
 
 void change(int node, int s, int e, int qs, int qe, int op){
-	if(op=-1){
+	if(op == -1){
 		return;
 	}
 	int sum = get_sum(node, s, e, qs, qe, op);
@@ -111,7 +114,11 @@ void propagate(int node, int s, int e, int qs, int qe, int op){
 ///////////////////////////////////////////////////////////////////
 
 int lazy_query(int node, int s, int e, int qs, int qe){
-	if(qs>e || qe<s || s>e){
+	if(s>e){
+		return 0;
+	}
+	if((s>qe || e<qs)){
+		propagate(node,s,e,qs,qe,pending[node]);
 		return 0;
 	}
 
@@ -149,7 +156,11 @@ int lazy_query(int node, int s, int e, int qs, int qe){
 
 
 void lazy_update(int node, int s, int e, int qs, int qe, int op){
-	if(s>e || (s>qe || e<qs)){
+	if(s>e){
+		return;
+	}
+	if((s>qe || e<qs)){
+		propagate(node,s,e,qs,qe,pending[node]);
 		return;
 	}
 	propagate(node,s,e,qs,qe,pending[node]);
