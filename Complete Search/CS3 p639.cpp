@@ -72,7 +72,7 @@ int main(){
 				cin >> board[i][j];
 			}
 		}
-		for(int i=0;i<=N*N;i++){
+		for(int i=0;i<N*N;i++){
 			if(board[x[i]][y[i]]!='X'){
 				find_max_placing(i,1);
 			}
