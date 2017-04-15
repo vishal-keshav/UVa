@@ -29,52 +29,34 @@ int main(){
 		for(int i=0;i<S;i++){
 			cin >> weight[i];
 		}
-		sort(weight.begin(),weight.end());
-		int left = 0;
-		int right = S-1;
 		double imbalance = 0.00;
 		double mean = get_mean(weight,C);
-		double left_abs, right_abs, left_right_abs;
 		int nr_chamber=0;
 		cout << "Set #" << nr_set <<endl;
-		while(left<right){
-			//Case 1: left is good
-			left_abs = absolute((double)weight[left],mean);
-			//Case 2: right is good
-			right_abs = absolute((double)weight[right],mean);
-			//Case 3: both left and right make sense
-			left_right_abs = absolute((double)(weight[left]+weight[right]),mean);
-			//Select the case which gives minimum absolute difference
-			if(left_abs<right_abs){
-				if(left_abs<left_right_abs){
-					cout << nr_chamber << ": " << weight[left] << endl;
-					left++;
-					nr_chamber++;
-					imbalance+=left_abs;
+		while(!weight.empty()){
+			vector<int>::iterator first = weight.begin();
+			vector<int>::iterator second = weight.end();
+			double temp_diff = absolute((double)(*first),mean);
+			for(vector<int>::iterator it=first+1;it!=weight.end();it++){
+				if(temp_diff > absolute((double)((*first)+(*it)),mean)){
+					temp_diff = absolute((double)((*first)+(*it)),mean);
+					second = it;
 				}
-				else{
-					cout << nr_chamber << ": " << weight[left] << " " << weight[right] << endl;
-					left++;
-					right--;
-					nr_chamber++;
-					imbalance+=left_right_abs;
-				}
+			}
+			imbalance+=temp_diff;
+			cout << nr_chamber << ": " << (*first);
+
+			if(second!=weight.end()){
+				cout << " " << (*second);
+				weight.erase(first);
+				//First is removed, so idex will reduce by 1 for second
+				weight.erase(second-1);
 			}
 			else{
-				if(right_abs<left_right_abs){
-					cout << nr_chamber << ": " << weight[right] << endl;
-					right--;
-					nr_chamber++;
-					imbalance+=right_abs;
-				}
-				else{
-					cout << nr_chamber << ": " << weight[left] << " " << weight[right] << endl;
-					left++;
-					right--;
-					nr_chamber++;
-					imbalance+=left_right_abs;
-				}
+                weight.erase(first);
 			}
+			cout << endl;
+			nr_chamber++;
 		}
         while(nr_chamber<C){
             cout << nr_chamber << ": "<< endl;
