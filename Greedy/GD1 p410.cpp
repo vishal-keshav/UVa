@@ -5,6 +5,24 @@
 
 using namespace std;
 
+struct index_weight{
+    int weight;
+    int index;
+};
+
+struct index_pair_weight{
+    int w1, w2;
+    int index;
+};
+
+bool comp_weight(struct index_weight e1, struct index_weight e2){
+    return (e1.weight < e2.weight);
+}
+
+bool comp_index(struct index_pair_weight e1, struct index_pair_weight e2){
+    return (e1.index < e2.index);
+}
+
 double get_mean(vector<int> w, int c){
 	double ret = 0.00;
 	for(vector<int>::iterator it = w.begin(); it!=w.end(); it++){
@@ -29,40 +47,55 @@ int main(){
 		for(int i=0;i<S;i++){
 			cin >> weight[i];
 		}
+		//Append with zero weights for rest pairing
+		for(int i=S;i<2*C;i++){
+			weight.push_back(0);
+		}
+		//Create index ordered inputs
+		vector<struct index_weight> new_weight;
+		for(int i=0;i<2*C;i++){
+            struct index_weight temp;
+            temp.index = i;
+            temp.weight = weight[i];
+            new_weight.push_back(temp);
+		}
+		//Sort for optimal pairing
+		sort(new_weight.begin(),new_weight.end(),comp_weight);
 		double imbalance = 0.00;
 		double mean = get_mean(weight,C);
 		int nr_chamber=0;
 		cout << "Set #" << nr_set <<endl;
-		while(!weight.empty()){
-			vector<int>::iterator first = weight.begin();
-			vector<int>::iterator second = weight.end();
-			double temp_diff = absolute((double)(*first),mean);
-			for(vector<int>::iterator it=first+1;it!=weight.end();it++){
-				if(temp_diff > absolute((double)((*first)+(*it)),mean)){
-					temp_diff = absolute((double)((*first)+(*it)),mean);
-					second = it;
-				}
-			}
-			imbalance+=temp_diff;
-			cout << nr_chamber << ": " << (*first);
-
-			if(second!=weight.end()){
-				cout << " " << (*second);
-				weight.erase(first);
-				//First is removed, so idex will reduce by 1 for second
-				weight.erase(second-1);
-			}
-			else{
-                weight.erase(first);
-			}
-			cout << endl;
-			nr_chamber++;
+		vector<struct index_pair_weight> ans_vec;
+		for(int i=0,j=2*C-1;i<j;i++,j--){
+            struct index_pair_weight temp;
+            if(new_weight[i].index < new_weight[j].index){
+                temp.w1 = new_weight[i].weight;
+                temp.w2 = new_weight[j].weight;
+            }
+            else{
+                temp.w2 = new_weight[i].weight;
+                temp.w1 = new_weight[j].weight;
+            }
+            temp.index = min(new_weight[i].index,new_weight[j].index);
+            ans_vec.push_back(temp);
+			imbalance+=absolute((double)(new_weight[i].weight+new_weight[j].weight),mean);
 		}
-        while(nr_chamber<C){
+		sort(ans_vec.begin(),ans_vec.end(),comp_index);
+		for(int i=0;i<C;i++){
+            cout << " " <<nr_chamber << ":";
+            if(ans_vec[i].w1!=0){
+                cout << " " <<ans_vec[i].w1;
+            }
+            if(ans_vec[i].w2!=0){
+                cout << " " <<ans_vec[i].w2;
+            }
+            cout << endl;
+            nr_chamber++;
+		}
+        /*while(nr_chamber<C){
             cout << nr_chamber << ": "<< endl;
             nr_chamber++;
-        }
-        //cout << "IMBALANCE = " << imbalance << endl << endl;
+        }*/
         printf("IMBALANCE = %0.5f\n\n",imbalance);
 		nr_set++;
 	}
