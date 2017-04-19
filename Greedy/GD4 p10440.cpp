@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(){
-    freopen("output.txt","w",stdout);
+    //freopen("output.txt","w",stdout);
 	int T,n,t,m;
 	cin >> T;
 	while(T--){
@@ -18,7 +18,6 @@ int main(){
 		int global_clock = 0;
 		int load;
 		int arrival_index = 0;
-		int trips = 1;
 		while(1){
 			//Unload for fresh loading
 			load = 0;
@@ -46,10 +45,9 @@ int main(){
 			else{
 				//Go back to load more cars
 				global_clock+=t;
-				trips++;
 			}
 		}
-		cout << global_clock << " " << trips << endl;
+		cout << global_clock << endl;
 	}
 	return 0;
 }
