@@ -17,28 +17,22 @@ int main(){
 		}
 		int global_clock = 0;
 		int load;
-		int arrival_index = 0;
+		int arrival_index;
+		int nr_trips;
+		//Pick smallest left cars initially, remainder
+		if(m%n==0){
+            arrival_index = n-1;
+		}
+		else{
+            arrival_index = m%n - 1; //Since starting with index 0
+		}
 		while(1){
 			//Unload for fresh loading
-			load = 0;
-			while(load<n && arrival_index<m){
-				//Keep on loading
-				load++;
-				//update global clock for wait
-				global_clock = arrivals[arrival_index];
-				//wait for next
-				arrival_index++;
-				/*Check if it can dump current cars
-				  and come back before next arrival*/
-				if(arrival_index < m){
-					if(arrivals[arrival_index]>=global_clock+2*t){
-						break;
-					}
-				}
-			}
+			global_clock = max(global_clock,arrivals[arrival_index]);
 			//Deliver the loaded cars, update the global clock
 			global_clock+=t;
 			//Check if all cars have been delivered
+			arrival_index+=n;
 			if(arrival_index>=m){
 				break;
 			}
@@ -47,7 +41,14 @@ int main(){
 				global_clock+=t;
 			}
 		}
-		cout << global_clock << endl;
+		//Too clever method for nr_trip calculation
+		if(m%n!=0){
+            nr_trips = m/n +1;
+		}
+		else{
+            nr_trips = m/n;
+		}
+		cout << global_clock << " " << nr_trips << endl;
 	}
 	return 0;
 }
