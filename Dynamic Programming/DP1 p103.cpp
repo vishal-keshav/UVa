@@ -16,7 +16,7 @@ bool nest(vector<int> a, vector<int> b){
 	bool ret = true;
 	int nr_dim = a.size();
 	for(int i=0;i<nr_dim;i++){
-		if(a[i]>b[i]){
+		if(a[i]>=b[i]){
 			ret = false;
 		}
 	}
@@ -43,7 +43,18 @@ int main(){
 			temp.index = i+1;
 			boxes[i] = temp;
 		}
-		sort(boxes.begin(),boxes.end(), comp);
+		//sort(boxes.begin(),boxes.end(), comp);
+		vector<struct box_elem> temp_boxes = boxes;
+		struct box_elem tempo;
+		for(int i=0;i<nr_box-1;i++){
+			for(int j=i+1;j<nr_box;j++){
+				if(comp(boxes[j],boxes[i])){
+					tempo = boxes[i];
+					boxes[i] = boxes[j];
+					boxes[j] = tempo;
+				}
+			}
+		}
 #ifdef DEBUG
         for(int i=0;i<nr_box;i++){
             cout << boxes[i].box[0] << endl;
@@ -58,7 +69,7 @@ int main(){
 		int max_lis = 1;
 		int max_idx = 0;
 		for(int i=1;i<nr_box;i++){
-			for(int j=i-1;j>=0;j--){
+			for(int j=0;j<i;j++){
 				if(comp(boxes[j],boxes[i])){
 					if(lis[i] < 1+lis[j]){
 						lis[i] = 1+lis[j];
