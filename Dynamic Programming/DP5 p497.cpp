@@ -52,7 +52,9 @@ int main(){
 			cout << result.top() << endl;
 			result.pop();
 		}
-		cout << endl;
+		if(i!=T-1){
+            cout << endl;
+		}
 	}
 
 	return 0;
