@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-#include <algorithm>
+#include <stack>
 
 using namespace std;
 
@@ -20,27 +20,15 @@ struct cube{
 
 };
 
+int opposite_side[6] = {1,0,3,2,5,4};
+string string_side[6] = {"front", "back", "left" ,"right" ,"top" ,"bottom"};
+
 int opposite(int side){
-	switch(side){
-		case 0:
-			return 1;
-			break;
-		case 1:
-			return 0;
-			break;
-		case 2:
-			return 3;
-			break;
-		case 3:
-			return 2;
-			break;
-		case 4:
-			return 5;
-			break;
-		case 5:
-			return 4;
-			break;
-	}
+	return opposite_side[side];
+}
+
+string side_to_string(int side){
+	return string_side[side];
 }
 
 int main(){
@@ -59,6 +47,10 @@ int main(){
 		}
 		//Process the LIS for each face
 		vector<vector<int> > lis(N,vector<int>(6,1));
+		vector<vector<int> > parent(N,vector<int>(6,-1));
+		vector<vector<int> > side_parent(N,vector<int>(6,-1));
+		int best_index = N-1;
+		int best_side = 0;
 		int max_lis = 1;
 		for(int i=N-2;i>=0;i--){
 			for(int j=i+1;j<N;j++){
@@ -68,8 +60,12 @@ int main(){
 						if(cube_list[i].face_color[k] == cube_list[j].face_color[l]){
 							if(lis[i][opposite(k)] < 1+lis[j][l]){
 								lis[i][opposite(k)] = 1 + lis[j][l];
+								parent[i][opposite(k)] = j;
+								side_parent[i][opposite(k)] = l;
 								if(lis[i][opposite(k)] > max_lis){
 									max_lis = lis[i][opposite(k)];
+									best_index = i;
+									best_side = opposite(k);
 								}
 							}
 						}
@@ -78,7 +74,17 @@ int main(){
 			}
 		}
 		//Print result
+		cout << "Case #" << nr_test << endl;
 		cout << max_lis << endl;
+		int iter_index = best_index;
+		int iter_side = best_side;
+		//stack<int>
+		while(iter_index!=-1 && iter_side!=-1){
+			cout << cube_list[iter_index].cube_index << " " << best_side << endl;
+			iter_index = parent[iter_index][iter_side];
+			iter_side = side_parent[iter_index][iter_side];
+		}
+		cout << endl;
 		cin >> N;
 		nr_test++;
 	}
