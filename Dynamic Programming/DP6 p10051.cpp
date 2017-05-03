@@ -32,6 +32,7 @@ string side_to_string(int side){
 }
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int N,nr_test=1;
 	cin >> N;
 	while(N){
@@ -57,15 +58,15 @@ int main(){
 				//Process each side of the cube
 				for(int k=0;k<NR_SIDES;k++){
 					for(int l=0;l<NR_SIDES;l++){
-						if(cube_list[i].face_color[k] == cube_list[j].face_color[l]){
-							if(lis[i][opposite(k)] < 1+lis[j][l]){
-								lis[i][opposite(k)] = 1 + lis[j][l];
-								parent[i][opposite(k)] = j;
-								side_parent[i][opposite(k)] = l;
-								if(lis[i][opposite(k)] > max_lis){
-									max_lis = lis[i][opposite(k)];
+						if(cube_list[i].face_color[opposite(k)] == cube_list[j].face_color[l]){
+							if(lis[i][k] < 1+lis[j][l]){
+								lis[i][k] = 1 + lis[j][l];
+								parent[i][k] = j;
+								side_parent[i][k] = l;
+								if(lis[i][k] > max_lis){
+									max_lis = lis[i][k];
 									best_index = i;
-									best_side = opposite(k);
+									best_side = k;
 								}
 							}
 						}
@@ -78,14 +79,18 @@ int main(){
 		cout << max_lis << endl;
 		int iter_index = best_index;
 		int iter_side = best_side;
+		int temp_iter_index;
 		//stack<int>
 		while(iter_index!=-1 && iter_side!=-1){
-			cout << cube_list[iter_index].cube_index << " " << best_side << endl;
+			cout << cube_list[iter_index].cube_index << " " << side_to_string(iter_side) << endl;
+			temp_iter_index = iter_index;
 			iter_index = parent[iter_index][iter_side];
-			iter_side = side_parent[iter_index][iter_side];
+			iter_side = side_parent[temp_iter_index][iter_side];
 		}
-		cout << endl;
 		cin >> N;
+		if(N){
+            cout << endl;
+		}
 		nr_test++;
 	}
 
