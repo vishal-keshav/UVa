@@ -8,6 +8,7 @@ using namespace std;
 #define INT_MAXIMUM 100000000
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int N;
 	cin >> N;
 	while(N){
@@ -26,10 +27,13 @@ int main(){
 		int max_len = 1;
 		for(int i=1,index=N-1;i<=N,index>=0;i++,index--){
             //cout << "Processing for " << weight[index] << endl;
+            bool go_ahead;
 			for(int j=1;j<=N;j++){
+                go_ahead = false;
 				for(int k=i-1;k>=0;k--){
 					if(weight[index]+DP[k][j-1]<DP[i][j]){
 						if(DP[k][j-1]<=load[index]){
+                            go_ahead = true;
 							DP[i][j] = weight[index]+DP[k][j-1];
 							if(max_len<j){
 								max_len = j;
@@ -37,6 +41,9 @@ int main(){
 						}
 					}
 				}
+                if(!go_ahead){
+                    break;
+                }
 			}
 		}
 
