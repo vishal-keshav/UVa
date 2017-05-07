@@ -7,52 +7,57 @@ using namespace std;
 
 #define INT_MAXIMUM 100000000
 
+int N;
+vector<int> weight(1001);
+vector<int> load(1001);
+vector<vector<int> > DP(1001,vector<int>(6002));
+
+int get_max_len(int block_index, int remaining_capacity){
+	if(DP[block_index][remaining_capacity]!=-1){
+        return DP[block_index][remaining_capacity];
+	}
+	//Base case
+	if(block_index==N || remaining_capacity<0){
+		return 0;
+	}
+	//Main case
+	else{
+		if(weight[block_index] > remaining_capacity){
+			//Skip this block, stack from next block
+			DP[block_index][remaining_capacity] = get_max_len(block_index+1,remaining_capacity);
+		}
+		else{
+			//Two cases:
+			//1. take this block, then remaining capacity will decrease by its weight
+			//2. dont take this block, remaining capacity to stack will remain same
+
+			/*Caes 1: If current block is putting a cap on remaining capacity, then take that*/
+			int case_two = get_max_len(block_index+1, remaining_capacity);
+			int case_one = 1 + get_max_len(block_index+1, min(load[block_index],remaining_capacity-weight[block_index]));
+
+
+			DP[block_index][remaining_capacity] = max(case_one, case_two);
+		}
+		return DP[block_index][remaining_capacity];
+	}
+}
+
 int main(){
     //freopen("output.txt","w",stdout);
-	int N;
 	cin >> N;
 	while(N){
-		vector<int> weight(N);
-		vector<int> load(N);
 		for(int i=0;i<N;i++){
 			cin >> weight[i] >> load[i];
 		}
-		vector<vector<int> > DP(N+1,vector<int>(N+1,INT_MAXIMUM));
-		//Fill the initial arrays
+		//Initialize DP
 		for(int i=0;i<=N;i++){
-			DP[0][i] = INT_MAXIMUM;
-			DP[i][0] = 0;
-		}
-		//Fill the DP, retaining max_len
-		int max_len = 1;
-		for(int i=1,index=N-1;i<=N,index>=0;i++,index--){
-            //cout << "Processing for " << weight[index] << endl;
-            bool go_ahead;
-			for(int j=1;j<=N;j++){
-                go_ahead = false;
-				for(int k=i-1;k>=0;k--){
-					if(weight[index]+DP[k][j-1]<DP[i][j]){
-						if(DP[k][j-1]<=load[index]){
-                            go_ahead = true;
-							DP[i][j] = weight[index]+DP[k][j-1];
-							if(max_len<j){
-								max_len = j;
-							}
-						}
-					}
-				}
-                if(!go_ahead){
-                    break;
-                }
+			for(int j=0;j<6002;j++){
+				DP[i][j] = -1;
 			}
 		}
+		//Apply top-to-bottom approach, easy to understand in recursion
+		int max_len = get_max_len(0,6001);
 
-		/*for(int i=0;i<=N;i++){
-			for(int j=0;j<=N;j++){
-				cout << DP[i][j] << "  ";
-			}
-			cout << endl;
-		}*/
 		cout << max_len << endl;
 
 		cin >> N;
