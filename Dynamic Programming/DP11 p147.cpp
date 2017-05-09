@@ -22,7 +22,7 @@ int main(){
 	long long int converted_input;
 	cin >> input;
 	while(input){
-		converted_input = (long long int)(100*input)/(long long int)5;
+		converted_input = (long long int)(100*(input+0.0005))/(long long int)5;
 		//cout << (long long int)(input*100) << endl;
 		//cout << converted_input << endl;
 
