@@ -6,6 +6,7 @@
 using namespace std;
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T,N,nr_case=1;
 	cin >> T;
 	while(T--){
@@ -20,25 +21,25 @@ int main(){
 			DP[i+1] = DP[i] + nice[i];
 		}
 		int start_idx = -1, end_idx = -1;
-		int lenght = 0, sum_nice = 0;
+		int length = 0, sum_nice = 0;
 		for(int i=1;i<N;i++){
 			for(int j=1;j<=i;j++){
 				if(sum_nice < DP[i]-DP[j-1]){
 					sum_nice = DP[i] - DP[j-1];
 					start_idx = j;
-					end_idx = i;
+					end_idx = i+1;
 					length = i-j+1;
 				}
 				else if(sum_nice == DP[i] - DP[j-1]){
 					if(length < i-j+1){
 						start_idx = j;
-						end_idx = i;
+						end_idx = i+1;
 						length = i-j+1;
 					}
 				}
 			}
 		}
-		if(lenght==0){
+		if(length==0){
 			cout << "Route " << nr_case << " has no nice parts" << endl;
 		}
 		else{
