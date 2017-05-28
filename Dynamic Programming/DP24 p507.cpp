@@ -6,7 +6,6 @@
 using namespace std;
 
 int main(){
-    //freopen("output.txt","w",stdout);
 	int T,N,nr_case=1;
 	cin >> T;
 	while(T--){
@@ -15,35 +14,38 @@ int main(){
 		for(int i=0;i<N-1;i++){
 			cin >> nice[i];
 		}
-		//Apply kadane's algorithm
-		vector<int> DP(N,0);
+
+		int idx_start = -1, idx_end = 0;
+		int idx_latest = 0;
+		int running_max = 0, last_max = 0;
+
 		for(int i=0;i<N-1;i++){
-			DP[i+1] = DP[i] + nice[i];
-		}
-		int start_idx = -1, end_idx = -1;
-		int length = 0, sum_nice = 0;
-		for(int i=1;i<N;i++){
-			for(int j=1;j<=i;j++){
-				if(sum_nice < DP[i]-DP[j-1]){
-					sum_nice = DP[i] - DP[j-1];
-					start_idx = j;
-					end_idx = i+1;
-					length = i-j+1;
+			running_max+=nice[i];
+			if(running_max < 0){
+				running_max = 0;
+				if(idx_start==-1){
+                    idx_start = i;
 				}
-				else if(sum_nice == DP[i] - DP[j-1]){
-					if(length < i-j+1){
-						start_idx = j;
-						end_idx = i+1;
-						length = i-j+1;
-					}
-				}
+				idx_latest = i+1;
+			}
+			if(last_max < running_max){
+				last_max = running_max;
+                idx_start = idx_latest;
+                idx_end = i;
+			}
+			if(last_max == running_max){
+                if(idx_end-idx_start < i-idx_latest){
+                    idx_start = idx_latest;
+                    idx_end = i;
+                }
 			}
 		}
-		if(length==0){
+
+		if(last_max==0){
 			cout << "Route " << nr_case << " has no nice parts" << endl;
 		}
 		else{
-			cout << "The nicest part of route " << nr_case <<  " is between stops " << start_idx << " and " << end_idx << endl;
+			cout << "The nicest part of route " << nr_case <<  " is between stops " << idx_start+1 << " and " << idx_end+2 << endl;
 		}
 		nr_case++;
 	}
