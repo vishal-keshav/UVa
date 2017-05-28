@@ -1,3 +1,4 @@
 DP1 - DP10 = LIS/LDS
 DP11 - DP18 = Coin Exchange
-DP12 -
+DP12 - DP25 = Maximum Sum
+DP26 - 
