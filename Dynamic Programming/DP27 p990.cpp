@@ -19,12 +19,11 @@ int main(){
 		}
 		vector<int> DP(t+1,-1);
 		vector<int> nr_dp(t+1,0);
-		vector<int> item_used(t+1,-1);
-		vector<int> parent(t+1,0);
+		vector<vector<bool> > pickup(N, vector<bool>(t+1,false));
 		DP[0] = 0;
 		int ret = 0;
 		int nr_items=0;
-		int last_item= -1;
+		int pickup_weight;
 		for(int i=0;i<N;i++){
 			for(int j=t;j>=0;j--){
 				if(j-weight[i]>=0 && DP[j-weight[i]]!=-1){
@@ -32,29 +31,36 @@ int main(){
 					if(DP[j] < DP[j-weight[i]]+value[i]){
 						DP[j] = DP[j-weight[i]]+value[i];
 						nr_dp[j] = nr_dp[j-weight[i]] + 1;
-						item_used[j] = i;
-						parent[j] = j-weight[i];
+						pickup[i][j] = true;
 					}
 					if(ret < DP[j]){
 						ret = DP[j];
 						nr_items = nr_dp[j];
-						last_item = j;
+						pickup_weight = j;
 					}
 				}
 			}
 		}
 		cout << ret << endl;
 		cout << nr_items << endl;
-		stack<int> item_stack;
-		while(item_used[last_item]!=-1){
-            item_stack.push(item_used[last_item]);
-            //cout << value[item_used[last_item]] << endl;
-            last_item = parent[last_item];
+		int start = N-1;
+		stack<int> pickup_stack;
+		while(start>=0){
+			if(pickup[start][pickup_weight]){
+				//cout << weight[start]/(3*d) << " " << value[start] << endl;
+				pickup_weight = pickup_weight - weight[start];
+				pickup_stack.push(start);
+				start--;
+			}
+			else{
+				start--;
+			}
 		}
-		while(!item_stack.empty()){
-            cout << weight[item_stack.top()]/(3*d) << " " << value[item_stack.top()] << endl;
-            item_stack.pop();
+		while(!pickup_stack.empty()){
+			cout << weight[pickup_stack.top()]/(3*d) << " " << value[pickup_stack.top()] << endl;
+			pickup_stack.pop();
 		}
+		cout << endl;
 	}
 	return 0;
 }
