@@ -1,4 +1,5 @@
 DP1 - DP10 = LIS/LDS
 DP11 - DP18 = Coin Exchange
 DP12 - DP25 = Maximum Sum
-DP26 - 
+DP26 - DP28 = 0-1 Knapsack
+DP29 -
