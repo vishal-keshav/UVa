@@ -43,6 +43,22 @@ int main(){
 		}
 		cout << ret << endl;
 		cout << nr_items << endl;
+		/*nr_items = 0;
+		vector<bool> taken(N, false);
+		for(int i=0;i<N;i++){
+			if(pickup[i][pickup_weight]){
+				taken[i] = true;
+				nr_items++;
+				pickup_weight = pickup_weight - weight[i];
+			}
+			
+		}
+		cout << nr_items << endl;
+		for(int i=0;i<N;i++){
+			if(taken[i]){
+				cout << weight[i]/(3*d) << " " << value[i] << endl;
+			}
+		}*/
 		int start = N-1;
 		stack<int> pickup_stack;
 		while(start>=0){
