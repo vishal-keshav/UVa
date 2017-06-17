@@ -29,9 +29,10 @@ void compute_lecture(int topic_index, int time_left, int nr_taken, int total_d){
 	if(topic_index>=N){
 		if(nr_lectures>=nr_taken){
 			nr_lectures = nr_taken;
-			if(time_left!=L-topic[topic_index-1]){
+			/*if(time_left!=L-topic[topic_index-1]){
                 total_d+=di(time_left);
-			}
+			}*/
+			total_d+=di(time_left);
 			if(dissatisfaction > total_d){
 				dissatisfaction = total_d;
 			}
@@ -63,7 +64,7 @@ int main(){
 		}
 		compute_lecture(0,L,1,0);
 		cout << "Case " << nr_case << ":" << endl;
-		cout << "Minimum number of lecture: " << nr_lectures << endl;
+		cout << "Minimum number of lectures: " << nr_lectures << endl;
 		cout << "Total dissatisfaction index: " << dissatisfaction << endl;
 		nr_case++;
 		cin >> N;
