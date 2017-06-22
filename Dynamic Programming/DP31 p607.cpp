@@ -9,6 +9,8 @@ using namespace std;
 
 int N,L,C;
 vector<int> topic;
+vector<int> DP_lec;
+vector<int> DP_di;
 
 int nr_lectures;
 int dissatisfaction;
