@@ -26,6 +26,7 @@ int max_score(int s_index, int e_index){
 	}
 	else if(s_index==e_index){
 		DP[s_index][e_index] = arr[s_index];
+		DP_opponent[s_index][e_index] = 0;
 		return arr[s_index];
 	}
 	else{
