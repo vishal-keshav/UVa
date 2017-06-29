@@ -42,6 +42,41 @@ int main(){
             cout << i << " " << length[i] << endl;
         }
 #endif // DEBUG
+        int M = pow(2,N);
+        bool answer = false;
+        for(int i=0;i<M;i++){
+            for(int j=0;j<M;j++){
+                if(i!=j && length[i]==length[j] && (i&j)==0){
+                    for(int k=0;k<M;k++){
+                        if(j!=k && length[j]==length[k] && (i&k)==0 && (j&k)==0){
+                            for(int l=0;l<M;l++){
+                                if(l!=k && length[k]==length[l] && (i&l)==0 && (j&l)==0 && (k&l)==0){
+                                    answer = true;
+                                }
+                                if(answer){
+                                    break;
+                                }
+                            }
+                        }
+                        if(answer){
+                            break;
+                        }
+                    }
+                }
+                if(answer){
+                    break;
+                }
+            }
+            if(answer){
+                break;
+            }
+        }
+        if(answer){
+            cout << "yes" << endl;
+        }
+        else{
+            cout << "no" << endl;
+        }
 	}
 
 	return 0;
