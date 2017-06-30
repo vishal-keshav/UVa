@@ -1,3 +1,5 @@
+//Correction: All sticks has to be used for creating a square
+
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
@@ -51,7 +53,9 @@ int main(){
                         if(j!=k && length[j]==length[k] && (i&k)==0 && (j&k)==0){
                             for(int l=0;l<M;l++){
                                 if(l!=k && length[k]==length[l] && (i&l)==0 && (j&l)==0 && (k&l)==0){
-                                    answer = true;
+									if((i | j | k | l)==M-1){
+										answer = true;
+									}
                                 }
                                 if(answer){
                                     break;
