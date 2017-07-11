@@ -64,6 +64,7 @@ int main(){
 							DP[i] = min(DP[i],dist[k][l]+DP[(i & ~(1<<k)) & ~(1<<l)]);
 						}
 					}
+					break;
 				}
 			}
 		}
