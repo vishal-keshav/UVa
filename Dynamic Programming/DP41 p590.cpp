@@ -12,6 +12,7 @@ vector<vector<vector<int> > > cost(10,vector<vector<int> >(10,vector<int>(1001,0
 vector<vector<int> > DP;
 
 int main(){
+    //freopen("output.txt","w",stdout);
     nr_case = 1;
 	cin >> n >> k;
 	while(n+k>0){
@@ -34,7 +35,7 @@ int main(){
 				if(DP[j][i-1]!=INT_MAXIMUM){
 					for(int k=0;k<n;k++){
 						if(j!=k && cost[j][k][(i-1)%cost[j][k][0] + 1]!=0){
-							DP[k][i] = min(DP[k][i],cost[j][k][1%cost[j][k][0] + 1]+ DP[j][i-1]);
+							DP[k][i] = min(DP[k][i],cost[j][k][(i-1)%cost[j][k][0] + 1]+ DP[j][i-1]);
 						}
 					}
 				}
@@ -49,9 +50,7 @@ int main(){
 		}
 		cin >> n >> k;
 		nr_case++;
-		if(n+k){
-			cout << endl;
-		}
+        cout << endl;
 	}
 
 	return 0;
