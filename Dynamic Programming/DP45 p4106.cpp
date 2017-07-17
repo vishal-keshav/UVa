@@ -28,7 +28,7 @@ int main(){
 			}
 		}
 
-		for(int i=height;i>0;i--){
+		for(int i=h;i>0;i--){
 			//Just traverse one step below
 			for(int j=0;j<t;j++){
 				DP[j][i-1] = max(DP[j][i-1],DP[j][i]+oak[j][i-1]);
