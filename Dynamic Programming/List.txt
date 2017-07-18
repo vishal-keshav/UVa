@@ -4,4 +4,5 @@ DP12 - DP25 = Maximum Sum
 DP26 - DP28 = 0-1 Knapsack
 DP29 - DP36 = Non-classical (DP31 unsolved)
 DP37 - DP40 = Bitmask (DP37 unsolved)
-DP41 - 
+DP41 - DP44 = Graph
+DP45 -
