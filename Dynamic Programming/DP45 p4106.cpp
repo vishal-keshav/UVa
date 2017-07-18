@@ -7,8 +7,9 @@ using namespace std;
 
 int nr_oak,height;
 int c,t,h,f;
+int temp;
 vector<vector<int> > oak;
-vector<vector<int> > DP;
+vector<int> DP;
 
 int main(){
     //freopen("output.txt","w",stdout);
@@ -18,37 +19,29 @@ int main(){
 		oak.clear();
 		oak.resize(t, vector<int>(h+1,0));
 		DP.clear();
-		DP.resize(t, vector<int>(h+1,0));
+		DP.resize(h+1,0);
 		for(int i=0;i<t;i++){
 			cin >> nr_oak;
 			for(int j=0;j<nr_oak;j++){
 				cin >> height;
 				oak[i][height]++;
-				DP[i][height]++;
+				DP[height]++;
 			}
 		}
 
 		for(int i=h;i>0;i--){
-			//Just traverse one step below
-			for(int j=0;j<t;j++){
-				DP[j][i-1] = max(DP[j][i-1],DP[j][i]+oak[j][i-1]);
-			}
 			//Move to each tree frorm each tree and decend f steps
 			for(int j=0;j<t;j++){
-				for(int k=0;k<t;k++){
-					if(i>=f){
-						DP[k][i-f] = max(DP[k][i-f],DP[j][i]+oak[k][i-f]);
-					}
+				//Update in oak itself
+				temp = 0;
+				if(i-1+f <= h){
+					temp = DP[i-1+f];
 				}
+				oak[j][i-1]+= max(oak[j][i],temp);
+				DP[i-1] = max(DP[i-1],oak[j][i-1]);
 			}
 		}
-
-
-		int ret = 0;
-		for(int i=0;i<t;i++){
-			ret = max(ret,DP[i][0]);
-		}
-		cout << ret << endl;
+		cout << DP[0] << endl;
 	}
 	cin >> c;
 	return 0;
