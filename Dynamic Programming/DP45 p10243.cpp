@@ -5,6 +5,8 @@
 
 #define INT_MAXIMUM 1000000
 
+//#define DEBUG 1
+
 using namespace std;
 
 int N,nr,node;
@@ -30,17 +32,17 @@ int install(int node, int is_fill){
 			ret = 0;
 			for(int i=1;i<=N;i++){
 				if(graph[node][i]){
-					ret+=(install(i,1)+1);
+					ret+=(install(i,1));
 				}
 			}
 			DP[node][is_fill] = ret;
 			return ret;
 		}
 		else{
-			ret = 0;
-			for(int i=1;i<N;i++){
+			ret = 1;
+			for(int i=1;i<=N;i++){
 				if(graph[node][i]){
-					ret+=min(install(i,0),install(i,1)+1);
+					ret+=min(install(i,0),install(i,1));
 				}
 			}
 			DP[node][is_fill] = ret;
@@ -49,7 +51,19 @@ int install(int node, int is_fill){
 	}
 }
 
+#ifdef DEBUG
+void print_graph(int node){
+	cout << node << " ";
+	for(int i=1;i<=N;i++){
+		if(graph[node][i]){
+			print_graph(i);
+		}
+	}
+}
+#endif
+
 int main(){
+    //freopen("output.txt","w",stdout);
 	cin >> N;
 	while(N){
 		graph.clear();
@@ -67,11 +81,22 @@ int main(){
 		//Apply DP on each node, starting from root node 1
 		DP.clear();
 		DP.resize(N+1,vector<int>(2,INT_MAXIMUM));
-		int ret = INT_MAXIMUM;
-		ret = min(install(1,0),1+install(1,1));
-		cout << ret << endl;
-
-		cin >> N;
+		int ret;
+		ret = min(install(1,0),install(1,1));
+#ifdef DEBUG
+		print_graph(1);
+		cout << endl;
+		for(int i=1;i<=N;i++){
+            cout << i << " " << DP[i][0] << DP[i][1] << endl;
+		}
+#endif
+        if(N==1){
+            cout << "1" << endl;
+        }
+        else{
+            cout << ret << endl;
+        }
+        cin >> N;
 	}
 
 	return 0;
