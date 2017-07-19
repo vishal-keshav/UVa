@@ -3,16 +3,57 @@
 #include <algorithm>
 #include <vector>
 
+#define INT_MAXIMUM 1000000
+
 using namespace std;
 
 int N,nr,node;
 vector<vector<bool> > graph;
+vector<vector<int> > DP;
+void remove_back(int node){
+	for(int i=1;i<=N;i++){
+		if(graph[node][i]){
+			graph[i][node] = false;
+			remove_back(i);
+		}
+	}
+	return;
+}
+
+int install(int node, int is_fill){
+	if(DP[node][is_fill]!=INT_MAXIMUM){
+		return DP[node][is_fill];
+	}
+	else{
+		int ret;
+		if(is_fill==0){
+			ret = 0;
+			for(int i=1;i<=N;i++){
+				if(graph[node][i]){
+					ret+=(install(i,1)+1);
+				}
+			}
+			DP[node][is_fill] = ret;
+			return ret;
+		}
+		else{
+			ret = 0;
+			for(int i=1;i<N;i++){
+				if(graph[node][i]){
+					ret+=min(install(i,0),install(i,1)+1);
+				}
+			}
+			DP[node][is_fill] = ret;
+			return ret;
+		}
+	}
+}
 
 int main(){
 	cin >> N;
 	while(N){
 		graph.clear();
-		graph.resize(N+1,vector<int>(N+1,false));
+		graph.resize(N+1,vector<bool>(N+1,false));
 		for(int i=1;i<=N;i++){
 			cin >> nr;
 			for(int j=0;j<nr;j++){
@@ -21,9 +62,17 @@ int main(){
 				graph[node][i] = true;
 			}
 		}
-		
+		//Remove back pointer using recursion
+		remove_back(1);
+		//Apply DP on each node, starting from root node 1
+		DP.clear();
+		DP.resize(N+1,vector<int>(2,INT_MAXIMUM));
+		int ret = INT_MAXIMUM;
+		ret = min(install(1,0),1+install(1,1));
+		cout << ret << endl;
+
 		cin >> N;
 	}
-	
+
 	return 0;
 }
