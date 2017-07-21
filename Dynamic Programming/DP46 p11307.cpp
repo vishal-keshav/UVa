@@ -40,6 +40,7 @@ int fill_dp(int node, int color){
 				ret+=child_ret;
 			}
 		}
+		DP[node][color] = ret;
 		return ret;
 	}
 }
