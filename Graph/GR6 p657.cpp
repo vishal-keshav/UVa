@@ -10,6 +10,9 @@ int w,h;
 vector<string> picture;
 vector<int> nr_dots;
 
+int move_x[4] = {-1,0,0,1};
+int move_y[4] = {0,-1,1,0};
+
 bool is_valid(int x, int y){
 	if(x>=0 && y>=0 && x<h && y<w){
 		return true;
@@ -17,8 +20,38 @@ bool is_valid(int x, int y){
 	return false;
 }
 
-int flood_fill(int x, int j){
+void flood_fill_dots(int x, int y){
+	if(!is_valid(x,y)){
+		return;
+	}
+	if(picture[x][y]!='X'){
+		return;
+	}
+	picture[x][y] = '*';
+	for(int i=0;i<4;i++){
+		flood_fill_dots(x+move_x[i], y+move_y[i]);
+	}
+	return;
+}
+
+int flood_fill(int x, int y){
 	//flood fills * and retun number of dots group X
+	if(!is_valid(x,y)){
+		return 0;
+	}
+	if(picture[x][y]=='.'){
+		return 0;
+	}
+	int ret = 0;
+	if(picture[x][y]=='X'){
+		flood_fill_dots(x,y);
+		ret++;
+	}
+	picture[x][y] = '.';
+	for(int i=0;i<4;i++){
+		ret+=flood_fill(x+move_x[i],y+move_y[i]);
+	}
+	return ret;
 }
 
 int compute_dots(void){
@@ -31,12 +64,13 @@ int compute_dots(void){
 			}
 		}
 	}
-	
+	return nr_dots.size();
 }
 
 int main(){
 	string temp;
 	int nr_case=1;
+	int nr_dice;
 	cin >> w >> h;
 	while(w+h){
 		picture.clear();
@@ -52,7 +86,8 @@ int main(){
 			cout << nr_dots[i] << " ";
 		}
 		cout << nr_dots[nr_dice-1] << endl;
+		cin >> w >> h;
 	}
-	
+
 	return 0;
 }
