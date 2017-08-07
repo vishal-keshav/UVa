@@ -85,8 +85,9 @@ int main(){
 		for(int i=0;i<nr_dice-1;i++){
 			cout << nr_dots[i] << " ";
 		}
-		cout << nr_dots[nr_dice-1] << endl;
+		cout << nr_dots[nr_dice-1] << endl << endl;
 		cin >> w >> h;
+		nr_case++;
 	}
 
 	return 0;
