@@ -5,8 +5,6 @@
 #include <string>
 #include <cstddef>
 
-//#define DEBUG 1
-
 using namespace std;
 
 int T,h,w;
@@ -26,39 +24,17 @@ bool is_valid(int x, int y){
 	return false;
 }
 
-/*Proposed algorithm
-1. Search for the star
-2. From that location, flood fill spaces and star with star
-3. Apply boundary condition to convert star to hash
-4. Convert star to spaces*/
-
 void flood_fill_star(int i, int j){
 	if(!is_valid(i,j)){
 		return;
 	}
 	if(contour[i][j]==' '){
-		contour[i][j] = '*';
+		contour[i][j] = '#';
 		for(int k=0;k<4;k++){
 			flood_fill_star(i+move_x[k], j+move_y[k]);
 		}
 	}
 	return;
-}
-
-void apply_boundry(void){
-	for(int i=0;i<h;i++){
-		for(int j=0;j<w;j++){
-			if(contour[i][j]=='X'){
-				for(int k=0;k<4;k++){
-					if(is_valid(i+move_x[k],j+move_y[k])){
-						if(contour[i+move_x[k]][j+move_y[k]]=='*'){
-							contour[i+move_x[k]][j+move_y[k]]='#';
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 void trim_whitespaces(void){
@@ -84,17 +60,13 @@ int main(){
 			h++;
 			getline(cin,temp);
 		}
-		//fix the contour grid
+
 		w++;
 		for(int i=0;i<h;i++){
 			string blanks(w-contour[i].length(),' ');
 			contour[i].append(blanks);
 		}
-#ifdef DEBUG
-		for(int i=0;i<h;i++){
-			cout << contour[i] << endl;
-		}
-#endif
+
         bool break_condition = false;
 		for(int i=0;i<h;i++){
 			for(int j=0;j<w;j++){
@@ -102,23 +74,15 @@ int main(){
 					contour[i][j] = ' ';
 					flood_fill_star(i,j);
 					break_condition = true;
-					break;//Can be optimized more
+					break;
 				}
 			}
 			if(break_condition){
                 break;
 			}
 		}
-		apply_boundry();
-		for(int i=0;i<h;i++){
-			for(int j=0;j<w;j++){
-				if(contour[i][j]=='*'){
-					contour[i][j] = ' ';
-				}
-			}
-		}
+
 		trim_whitespaces();
-		//Return answer
 		for(int i=0;i<h;i++){
 			cout << contour[i] << endl;
 		}
