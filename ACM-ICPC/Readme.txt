@@ -1,1 +1,0 @@
-All efficient and inefficient solutions of last 10 years ACM-ICPC can be found here.
