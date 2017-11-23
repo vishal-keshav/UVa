@@ -13,9 +13,6 @@ vector<string> contour;
 int move_x[4] = {-1, 0, 0, 1};
 int move_y[4] = {0, -1, 1, 0};
 
-int diag_move_x[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-int diag_move_y[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
-
 int maximum(int a, int b){
     return (a<b?b:a);
 }
@@ -48,29 +45,11 @@ void trim_whitespaces(void){
 	}
 }
 
-//A point it marker if it is non-wall
-//A point is non-wall if it has less than two neighbour with same char
-bool is_marker(int i, int j){
-    if(contour[i][j]==' '){
-        return false;
-    }
-	int nr_same = 0;
-	for(int k=0;k<8;k++){
-		if(is_valid(i+diag_move_x[k],j+diag_move_y[k])){
-			if(contour[i+diag_move_x[k]][j+diag_move_y[k]]==contour[i][j]){
-				nr_same++;
-			}
-		}
-	}
-	if(nr_same<2){
-		return true;
-	}
-	return false;
-}
 
 int main(){
-    freopen("output.txt","w",stdout);
+    //freopen("output.txt","w",stdout);
 	string temp;
+  char marker;
 	//cin >> T;
 	//cin.ignore();
 	while(1){
@@ -93,12 +72,11 @@ int main(){
 
 		for(int i=0;i<h;i++){
 			for(int j=0;j<w;j++){
-				if(is_marker(i,j)){
-                    char temp = contour[i][j];
-					cout << temp << endl;
-                    //contour[i][j] = ' ';
-					//flood_fill_marker(i,j,temp);
-				}
+				if(!(contour[i][j]==' ' || contour[i][j]=='_' || contour[i][j]=='X')){
+          marker = contour[i][j];
+          contour[i][j] = ' ';
+          flood_fill_marker(i,j,marker);
+        }
 			}
 		}
 
