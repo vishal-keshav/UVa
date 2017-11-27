@@ -3,12 +3,15 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <cstddef>
 
 using namespace std;
 
 int T,h,w;
 vector<string> contour;
+int done[40][100] = {};
+char buffer[1001];
 
 int move_x[4] = {-1, 0, 0, 1};
 int move_y[4] = {0, -1, 1, 0};
@@ -30,6 +33,7 @@ void flood_fill_marker(int i, int j, char marker){
 	}
 	if(contour[i][j]==' '){
 		contour[i][j] = marker;
+    done[i][j] = 1;
 		for(int k=0;k<4;k++){
 			flood_fill_marker(i+move_x[k], j+move_y[k],marker);
 		}
@@ -47,21 +51,22 @@ void trim_whitespaces(void){
 
 
 int main(){
-    //freopen("output.txt","w",stdout);
+  //freopen("output.txt","w",stdout);
 	string temp;
   char marker;
+  char boundry;
 	//cin >> T;
 	//cin.ignore();
-	while(1){
+	while( gets(buffer) ){
 		contour.clear();
 		w = 0;
 		h = 0;
-		getline(cin,temp);
-		while(!(temp.length()!=0 && temp[0]=='_')){
-			contour.push_back(temp);
-			w = maximum(w,temp.length());
+		//getline(cin,temp);
+		while(!(buffer.length()!=0 && buffer[0]=='_')){
+			contour.push_back(buffer);
+			w = maximum(w,buffer.length());
 			h++;
-			getline(cin,temp);
+			gets(buffer);
 		}
 
 		w++;
@@ -70,9 +75,27 @@ int main(){
 			contour[i].append(blanks);
 		}
 
+    //Find boundry
+    bool break_case = false;
+    for(int i=0;i<h;i++){
+      for(int j=0;j<w;j++){
+        if(contour[i][j]!=' '){
+          boundry = contour[i][j];
+          break_case = true;
+          break;
+        }
+      }
+      if(break_case){
+        break;
+      }
+    }
+
 		for(int i=0;i<h;i++){
 			for(int j=0;j<w;j++){
-				if(!(contour[i][j]==' ' || contour[i][j]=='_' || contour[i][j]=='X')){
+				if(!(contour[i][j]==' ' || contour[i][j]=='_' || contour[i][j]==boundry)){
+          if(done[i][j]){
+            continue;
+          }
           marker = contour[i][j];
           contour[i][j] = ' ';
           flood_fill_marker(i,j,marker);
@@ -85,6 +108,7 @@ int main(){
 			cout << contour[i] << endl;
 		}
 		cout << temp << endl;
+    puts(buffer);
 	}
 
 	return 0;
