@@ -37,16 +37,15 @@ int find_camera(int node){
         back_seq[node] = min(back_seq[node], back_seq[i]);
         if(visit_seq[node] <= back_seq[i] && parent[node]!=node){
           articulation = true;
-          camera_city.push_back(city[node]);
         }
       }
     }
   }
   if(nr_child > 1 && parent[node]==node && !articulation){
-    camera_city.push_back(city[node]);
     articulation = true;
   }
   if(articulation){
+    camera_city.push_back(city[node]);
     ret++;
   }
   return ret;
@@ -60,6 +59,7 @@ void print_camera_city(void){
 }
 
 int main(){
+  //freopen("output.txt","w",stdout);
   string city_name;
   string city1, city2;
   int nr_camera, nr_case=1;
@@ -93,7 +93,12 @@ int main(){
       adj_mat[hash_map[city2]][hash_map[city1]] = 1;
     }
     time_now = 0;
-    nr_camera = find_camera(0);
+    nr_camera = 0;
+    for(int i=0;i<N;i++){
+      if(visited[i]==0){
+        nr_camera+= find_camera(i);
+      }
+    }
     cout << "City map #" << nr_case << ": " << nr_camera << " camera(s) found" << endl;
     print_camera_city();
     cout << endl;

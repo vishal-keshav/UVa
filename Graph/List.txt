@@ -1,2 +1,3 @@
 GR1 - GR16= Flood fill
-GR17 - 
+GR17 - GR20= Articulation point/bridge
+GR21 -
