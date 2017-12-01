@@ -50,7 +50,6 @@ int nr_articulation(int node){
 }
 
 int main(){
-  //freopen("output.txt","w",stdout);
   string line;
   int node1, node2;
   cin >> N;
@@ -63,9 +62,9 @@ int main(){
     parent.clear();
     parent.resize(N+1, 0);
     visit_seq.clear();
-    visit_seq.resize(N+1);
+    visit_seq.resize(N+1,0);
     back_seq.clear();
-    back_seq.resize(N+1);
+    back_seq.resize(N+1,0);
     for(int i=1;i<=N;i++){
       parent[i] = i;
     }
