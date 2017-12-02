@@ -101,8 +101,11 @@ int main(){
     }
     cout << "City map #" << nr_case << ": " << nr_camera << " camera(s) found" << endl;
     print_camera_city();
-    cout << endl;
+
     cin >> N;
+    if(N){
+      cout << endl;
+    }
     nr_case++;
   }
 
