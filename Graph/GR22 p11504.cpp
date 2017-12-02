@@ -6,7 +6,7 @@
 
 using namespace std;
 int N,n,m, time_now, ssc_group_nr;
-vector<vector<int> > adj_mat;
+vector<vector<int> > adj_list;
 vector<int> visited;
 vector<int> visit_seq;
 vector<int> back_seq;
@@ -20,15 +20,15 @@ void tarzan_ssc(int node){
   visit_seq[node] = time_now;
   back_seq[node] = time_now;
   node_stack.push(node);
-  for(int i=0;i<n;i++){
-    if(adj_mat[node][i]==1 && i!=node){
-      if(visited[i]==1){
-        back_seq[node] = min(back_seq[node], back_seq[i]);
+  for(int i=0;i<adj_list[node].size();i++){
+    if(adj_list[node][i]!=node){
+      if(visited[adj_list[node][i]]==1){
+        back_seq[node] = min(back_seq[node], back_seq[adj_list[node][i]]);
       }
       else{
         time_now++;
-        tarzan_ssc(i);
-        back_seq[node] = min(back_seq[node], back_seq[i]);
+        tarzan_ssc(adj_list[node][i]);
+        back_seq[node] = min(back_seq[node], back_seq[adj_list[node][i]]);
       }
     }
   }
@@ -55,10 +55,10 @@ int ssc_with_zero_indegree(void){
   ssc_indegree.clear();
   ssc_indegree.resize(ssc_group_nr,0);
   for(int i=0;i<n;i++){
-    for(int j=0;j<n;j++){
-      if(adj_mat[i][j]==1 && i!=j){
-        if(ssc_group[i]!=ssc_group[j]){
-          ssc_indegree[ssc_group[j]]++;
+    for(int j=0;j<adj_list[i].size();j++){
+      if(adj_list[i][j]!=i){
+        if(ssc_group[i]!=ssc_group[adj_list[i][j]]){
+          ssc_indegree[ssc_group[adj_list[i][j]]]++;
         }
       }
     }
@@ -77,12 +77,15 @@ int main(){
   cin >> N;
   while(N--){
     cin >> n >> m;
-    adj_mat.clear();
+    adj_list.clear();
+    adj_list.resize(n);
+    visited.clear();
     visited.resize(n,0);
 
     for(int i=1;i<=m;i++){
       cin >> node1 >> node2;
-      adj_mat[node1-1][node2-1] = 1;
+      //adj_mat[node1-1][node2-1] = 1;
+      adj_list[node1-1].push_back(node2-1);
     }
     time_now = 0;
     ssc_group_nr = 0;
