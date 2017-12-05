@@ -10,32 +10,32 @@ using namespace std;
 int E, nr_node;
 vector<vector<int> > adj_list;
 map<int, int> node_map;
+map<int, int> dist_map;
 queue<int> bfs_queue;
 
 int bfs(int node, int ttl){
-  vector<int> visited(nr_node,0);
-  int nr_node_reachable = 1;
-  bfs_queue.push(-1);
-  bfs_queue.push(node);
-  visited[node] = 1;
-  while(!bfs_queue.empty() && ttl!=0){
-    int n = bfs_queue.front();
-    bfs_queue.pop();
-    if(n==-1){
-      ttl--;
-      bfs_queue.push(-1);
-      continue;
-    }
-    for(vector<int>::iterator it = adj_list[n].begin(); it!=adj_list[n].end();it++){
-      if(visited[(*it)]==0){
-        bfs_queue.push((*it));
-        nr_node_reachable++;
-        visited[(*it)] = 1;
-      }
-
-    }
-  }
-  return nr_node_reachable;
+    dist_map.clear();
+	int ret = 1;
+	bfs_queue.push(node);
+	dist_map[node] = 0;
+	while(!bfs_queue.empty()){
+		int v = bfs_queue.front();
+		bfs_queue.pop();
+		if(dist_map[v]==ttl){
+			while(!bfs_queue.empty()){
+				bfs_queue.pop();
+			}
+			continue;
+		}
+		for(int i=0;i<adj_list[v].size();i++){
+			if(dist_map.find(adj_list[v][i])!=node_map.end()){
+				dist_map[adj_list[v][i]] = dist_map[v] + 1;
+				bfs_queue.push(adj_list[v][i]);
+				ret++;
+			}
+		}
+	}
+	return (nr_node - ret);
 }
 
 int main(){
@@ -67,13 +67,10 @@ int main(){
     }
     cin >> node >> ttl;
     while(node+ttl){
-      cout << "Case " << nr_case << ": " << (nr_node-bfs(node_map[node], ttl+1)) <<\
+      cout << "Case " << nr_case << ": " << bfs(node_map[node], ttl) <<\
       " nodes not reachable from node " << node << " with TTL = " << ttl << "." << endl;
       cin >> node >> ttl;
       nr_case++;
-      while(!bfs_queue.empty()){
-        bfs_queue.pop();
-      }
     }
     cin >> E;
   }
