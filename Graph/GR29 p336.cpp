@@ -25,10 +25,10 @@ int bfs(int node, int ttl){
 			while(!bfs_queue.empty()){
 				bfs_queue.pop();
 			}
-			continue;
+			break;
 		}
 		for(int i=0;i<adj_list[v].size();i++){
-			if(dist_map.find(adj_list[v][i])!=node_map.end()){
+			if(dist_map.find(adj_list[v][i])==dist_map.end()){
 				dist_map[adj_list[v][i]] = dist_map[v] + 1;
 				bfs_queue.push(adj_list[v][i]);
 				ret++;
