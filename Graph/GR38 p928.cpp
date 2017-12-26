@@ -15,6 +15,7 @@ struct loc{
 struct loc start_loc;
 struct loc end_loc;
 char** mapp;
+bool **visited[3];
 
 bool loc_is_null(struct loc location){
   if(location.x == -1 && location.y == -1){
@@ -66,10 +67,8 @@ int compute_steps(void){
   null_loc.y = -1;
   bfs_queue.push(start_loc);
   bfs_queue.push(null_loc);
-  mapp[start_loc.x][start_loc.y] = '#';
   while(!bfs_queue.empty()){
     struct loc temp = bfs_queue.front();
-    cout << temp.x << " " << temp.y << endl;
     bfs_queue.pop();
     if(loc_is_null(temp)){
       if(bfs_queue.empty()){
@@ -89,16 +88,13 @@ int compute_steps(void){
           struct loc new_loc;
           new_loc.x = temp.x + move_x[move_index][i];
           new_loc.y = temp.y + move_y[move_index][i];
-          if(loc_is_valid(temp, new_loc)){
+          if(loc_is_valid(temp, new_loc) && !visited[move_index][new_loc.x][new_loc.y]){
             bfs_queue.push(new_loc);
-            mapp[new_loc.x][new_loc.y] = '#';
+            visited[move_index][new_loc.x][new_loc.y] = true;
           }
         }
       }
     }
-  }
-  if(nr_moves!=-1){
-    nr_moves = (nr_moves/3) + nr_moves%3;
   }
   return nr_moves;
 }
@@ -111,14 +107,24 @@ int main(){
   while(T--){
     cin >> R >> C;
     mapp = new char*[R];
+    for(int v = 0; v<3;v++){
+        visited[v] = new bool*[R];
+    }
     for(int i=0;i<R;i++){
         mapp[i] = new char[C];
+        for(int v = 0; v<3; v++){
+           visited[v][i] = new bool[C];
+        }
         for(int j=0;j<C;j++){
+          for(int u = 0; u<3;u++){
+            visited[u][i][j] = false;
+          }
           cin >> status;
           mapp[i][j] = status;
           if(status == 'S'){
               start_loc.x = i;
               start_loc.y = j;
+              visited[2][i][j] = true;
           }
           if(status == 'E'){
               end_loc.x = i;
