@@ -71,7 +71,13 @@ int main(){
             ss >> surname >> name;
 			vector<int> paper_author;
 			while(name[name.length()-1]!=':'){
-				full_name = surname + " " + name.substr(0, name.size()-1);
+				if(name[name.length()-1] == '.'){
+					full_name = surname + " " + name.substr(0, name.size());
+					ss >> name;
+				}
+				else{
+					full_name = surname + " " + name.substr(0, name.size()-1);
+				}
 				if(author_map.find(full_name) == author_map.end()){
 					author_map[full_name] = nr_author;
 					nr_author++;
@@ -85,6 +91,9 @@ int main(){
 				}
 				ss >> surname >> name;
 				paper_author.push_back(author_map[full_name]);
+				if(surname[surname.length()-1] == ':'){
+					break;
+				}
 			}
 			full_name = surname + " " + name.substr(0, name.size()-1);
 			if(author_map.find(full_name) == author_map.end()){
