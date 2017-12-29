@@ -98,12 +98,23 @@ int main(){
 		getline(cin, word);
 	}
 	//Process words and make the graph
-	for(int i=0;i<word_name.size()-1;i++){
-		for(int j=i+1; j<word_name.size(); j++){
+	for(int i=0;i<word_name.size();i++){
+		/*for(int j=i+1; j<word_name.size(); j++){
 			if(adjacent(word_name[i], word_name[j])){
 				graph[word_map[word_name[i]]].push_back(word_map[word_name[j]]);
 				graph[word_map[word_name[j]]].push_back(word_map[word_name[i]]);
 			}
+		}*/
+		string original = word_name[i];
+		for(int len = 0;len<original.length(); len++){
+            for(char c = 'a'; c<='z'; c++){
+                string changed = original;
+                changed[len] = c;
+                if(word_map.find(changed) != word_map.end()){
+                    graph[word_map[original]].push_back(word_map[changed]);
+                    graph[word_map[changed]].push_back(word_map[original]);
+                }
+            }
 		}
 	}
     bool blank = false;
