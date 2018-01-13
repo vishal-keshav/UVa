@@ -104,9 +104,7 @@ int compute_moves(struct state s){
 	while(!bfs_queue.empty()){
 		struct state temp = bfs_queue.front();
 		bfs_queue.pop();
-		if(ret<=2){
-            print_state(temp);
-		}
+
 		if(temp.empty_x == -1){
 			if(bfs_queue.empty()){
 				break;
@@ -118,6 +116,9 @@ int compute_moves(struct state s){
 			bfs_queue.push(null_state);
 		}
 		else{
+            /*if(ret<=2){
+                print_state(temp);
+            }*/
 			if(state_is_final(temp)){
 				break;
 			}
@@ -127,13 +128,17 @@ int compute_moves(struct state s){
                 new_state.empty_x = temp.empty_x;
                 new_state.empty_y = temp.empty_y;
                 for(int i=0;i<5;i++){
-                    for(int j=0;j<5;j++){
+                    /*for(int j=0;j<5;j++){
                         new_state.row[i][j] = temp.row[i][j];
-                    }
+                    }*/
+					new_state.row[i] = temp.row[i];
                 }
-                if(ret<=2){
+                /*if(ret<=2){
+					cout << "Printing temp" << endl;
+					print_state(temp);
+					cout << "Printing copy" << endl;
                     print_state(new_state);
-                }
+                }*/
 				int x = temp.empty_x;
 				int y = temp.empty_y;
 				for(int i=0;i<8;i++){
@@ -147,11 +152,12 @@ int compute_moves(struct state s){
 				}
 			}
 		}
-
 	}
+	return ret;
 }
 
 int main(){
+    //freopen("output.txt","w",stdout);
 	int T;
 	construct_final();
 	cin >> T;
@@ -167,7 +173,7 @@ int main(){
 			cout << "Unsolvable in less than 11 move(s)." << endl;
 		}
 		else{
-			cout << "Solvable in " << moves << " moves(s)." << endl;
+			cout << "Solvable in " << moves << " move(s)." << endl;
 		}
 	}
 
