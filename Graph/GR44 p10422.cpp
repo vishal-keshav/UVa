@@ -93,6 +93,16 @@ void print_state(struct state s){
     }
     cout << endl;
 }
+//Backtracking with path pruning
+int step_to_final(struct state *s){
+	int ret = 0;
+	for(int i=0;i<5;i++){
+		for(int j=0;j<5;j++){
+			ret+= (s->row[i][j] != final_state.row[i][j])?1:0;
+		}
+	}
+	return (ret/2);
+}
 
 int compute_moves(struct state s){
 	int ret = 0;
@@ -106,9 +116,6 @@ int compute_moves(struct state s){
 		bfs_queue.pop();
 
 		if(temp.empty_x == -1){
-			if(bfs_queue.empty()){
-				break;
-			}
 			ret++;
 			if(ret>10){
 				break;
@@ -116,9 +123,6 @@ int compute_moves(struct state s){
 			bfs_queue.push(null_state);
 		}
 		else{
-            /*if(ret<=2){
-                print_state(temp);
-            }*/
 			if(state_is_final(temp)){
 				break;
 			}
@@ -128,17 +132,8 @@ int compute_moves(struct state s){
                 new_state.empty_x = temp.empty_x;
                 new_state.empty_y = temp.empty_y;
                 for(int i=0;i<5;i++){
-                    /*for(int j=0;j<5;j++){
-                        new_state.row[i][j] = temp.row[i][j];
-                    }*/
 					new_state.row[i] = temp.row[i];
                 }
-                /*if(ret<=2){
-					cout << "Printing temp" << endl;
-					print_state(temp);
-					cout << "Printing copy" << endl;
-                    print_state(new_state);
-                }*/
 				int x = temp.empty_x;
 				int y = temp.empty_y;
 				for(int i=0;i<8;i++){
@@ -146,7 +141,12 @@ int compute_moves(struct state s){
 					int new_y = y+move_y[i];
 					if(valid(new_x, new_y)){
 						change_state(x, new_x, y, new_y, &new_state);
-						bfs_queue.push(new_state);
+						if(step_to_final(&new_state)+ret<=10){
+							bfs_queue.push(new_state);
+						}
+						/*else{
+							cout << "Not possible" << endl;
+						}*/
 						change_state(new_x, x, new_y, y, &new_state);
 					}
 				}
@@ -155,6 +155,7 @@ int compute_moves(struct state s){
 	}
 	return ret;
 }
+
 
 int main(){
     //freopen("output.txt","w",stdout);
