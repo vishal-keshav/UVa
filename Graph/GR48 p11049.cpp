@@ -14,7 +14,6 @@ struct barrier{
 };
 vector<struct barrier> b;
 
-int R,C;
 struct coord{
   int x, y;
 };
@@ -27,7 +26,7 @@ void visit(struct coord s){
 }
 
 bool valid(struct coord s){
-  if(s.x>=0 && s.x<R && s.y>=0 && s.y<C && visited[s.x][s.y]==false){
+  if(s.x>=0 && s.x<6 && s.y>=0 && s.y<6 && visited[s.x][s.y]==false){
     return true;
   }
   return false;
@@ -79,7 +78,9 @@ vector<char> compute_path(void){
       bfs_queue.push(null);
     }
     else{
+      //cout << ":"<< temp.x<<":" << temp.y<< endl;
       if(loc_is_end(temp)){
+        //cout << "End break" << endl;
         break;
       }
       else{
@@ -88,6 +89,8 @@ vector<char> compute_path(void){
           new_loc.x = temp.x + move_x[i];
           new_loc.y = temp.y + move_y[i];
           if(valid(new_loc)){
+            //cout << "Valid location" << endl;
+            //cout << "Check for " << new_loc.x << " " << new_loc.y << endl;
             if(valid_move(temp, new_loc)){
               bfs_queue.push(new_loc);
               visited[new_loc.x][new_loc.y] = true;
@@ -125,15 +128,21 @@ vector<char> compute_path(void){
 
 int main(){
   //freopen("output.txt","w",stdout);
-  cin >> start_loc.x >> start_loc.y;
-  while(start_loc.x + start_loc.y){
-    cin >> end_loc.x >> end_loc.y;
+  cin >> start_loc.y >> start_loc.x;
+  while(start_loc.y + start_loc.x){
+    start_loc.y--;
+    start_loc.x--;
+    cin >> end_loc.y >> end_loc.x;
+    end_loc.y--;
+    end_loc.x--;
     b.clear();
+    b.resize(3);
     struct barrier temp_b;
     for(int i=0;i<3;i++){
       cin >> temp_b.x1 >> temp_b.y1;
       cin >> temp_b.x2 >> temp_b.y2;
-      b.push_back(temp_b);
+      //b.push_back(temp_b);
+      b[i] = temp_b;
     }
     visited.clear();
     visited.resize(6, vector<bool>(6, false));
@@ -152,7 +161,7 @@ int main(){
       cout << res[i];
     }
     cout << endl;
-    cin >> start_loc.x >> start_loc.y;
+    cin >> start_loc.y >> start_loc.x;
   }
   return 0;
 }
