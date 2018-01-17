@@ -14,6 +14,7 @@ struct config{
 struct config start_state, end_state;
 string start_str, end_str;
 map<string, int> map_state;
+vector<struct action> parent_action;
 int global_counter;
 
 struct action{
@@ -130,7 +131,7 @@ bool visit_state(string s){
 	global_counter++;
 }
 
-vector<struct action> compute_seq(void){
+/*vector<struct action> compute_seq(void){
 	int ret = 0;
 	vector<struct action> parent_action;
 	global_counter = 0;
@@ -204,11 +205,85 @@ vector<struct action> compute_seq(void){
 	}
 	reverse(action_seq.begin(), action_seq.end());
 	return action_seq;
+}*/
+
+void precompute_seq(void){
+	int ret = 0;
+	global_counter = 0;
+	map_state.clear();
+	queue<string> bfs_queue;
+	string null = "X";
+	bfs_queue.push(end_str);
+	map_state[end_str] = global_counter;
+	global_counter++;
+	struct action no_action;
+	parent_action.push_back(no_action);
+	bfs_queue.push(null);
+	while(!bfs_queue.empty()){
+		string temp = bfs_queue.front();
+		bfs_queue.pop();
+		if(state_is_null(temp)){
+			if(bfs_queue.empty()){
+				ret = -1;
+				break;
+			}
+			ret++;
+			bfs_queue.push(null);
+		}
+		else{
+			string new_state = temp;
+			struct action temp_action;
+			//Horizontal moves
+			for(int i=0;i<3;i++){
+				string new_state_h = horizontal_move_reverse(i, new_state);
+				if(!state_visited(new_state_h)){
+					bfs_queue.push(new_state_h);
+					visit_state(new_state_h);
+					temp_action.dir = 'H';
+					temp_action.level = i;
+					parent_action.push_back(temp_action);
+				}
+			}
+			//Vertical moves
+			for(int i=0;i<3;i++){
+				string new_state_v = vertical_move_reverse(i, new_state);
+				if(!state_visited(new_state_v)){
+					bfs_queue.push(new_state_v);
+					visit_state(new_state_v);
+					temp_action.dir = 'V';
+					temp_action.level = i;
+					parent_action.push_back(temp_action);
+				}
+			}
+		}
+	}
+	return;
+}
+
+vector<struct action> compute_seq(void){
+	vector<struct action> action_seq;
+	if(map_state.find(start_str) == map_state.end()){
+		return action_seq;
+	}
+	string temp_state = start_str;
+	struct action ac;
+	while(map_state[temp_state]!=0){
+		ac = parent_action[map_state[temp_state]];
+		action_seq.push_back(ac);
+		if(ac.dir == 'H'){
+			temp_state = horizontal_move(ac.level, temp_state);
+		}
+		else{
+			temp_state = vertical_move(ac.level, temp_state);
+		}
+	}
+	return action_seq;
 }
 
 int main(){
     //freopen("output.txt","w",stdout);
 	init_end();
+	precompute_seq();
 	cin >> start_state.state[0][0];
 	while(start_state.state[0][0]){
 		for(int i=0;i<3;i++){
