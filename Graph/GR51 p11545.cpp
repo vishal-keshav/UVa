@@ -14,13 +14,13 @@ int compute_time(int loc, int time, int walked){
     if(memo[loc][time][walked]!=-1){
         return memo[loc][time][walked];
     }
-	if(path[loc]=='D'){
-        memo[loc][time][walked] = 0;
-		return 0;
-	}
     if (((time <= 6 || time >= 18) && path[loc] == '*')||(walked > 16)){
         memo[loc][time][walked] = INF;
         return INF;
+	}
+	if(path[loc]=='D'){
+        memo[loc][time][walked] = 0;
+		return 0;
 	}
     int time_cost = 1 + compute_time(loc+1, (time+1)%24, walked+1);
 	int sleep_cost = 9 + compute_time(loc+1, (time+9)%24, 1);
