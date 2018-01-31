@@ -9,6 +9,7 @@ using namespace std;
 int S,T;
 vector<int> seive;
 vector<int> prime_factors;
+vector<bool> visited;
 
 void compute_prime_factors(int n){
     seive.clear();
@@ -32,11 +33,24 @@ void compute_prime_factors(int n){
     }
 }
 
+void sieve() {
+    int mark[1005] = {}, i, j;
+    for(i = 2; i < 1000; i++) {
+        if(mark[i] == 0) {
+            for(j = i+i; j < 1000; j += i)
+                mark[j] = 1;
+            prime_factors.push_back(i);
+        }
+    }
+}
+
 int compute_dist(void){
     int ret = 0;
     queue<int> bfs_queue;
     bfs_queue.push(S);
     bfs_queue.push(-1);
+	visited.clear();
+	visited.resize(1001, false);
     while(!bfs_queue.empty()){
         int temp = bfs_queue.front();
         bfs_queue.pop();
@@ -53,10 +67,11 @@ int compute_dist(void){
                 break;
             }
             else{
-                compute_prime_factors(temp);
-                for(int i=0;i<prime_factors.size();i++){
-                    if(temp+prime_factors[i]<=T){
+                //compute_prime_factors(temp);
+                for(int i=0;i<prime_factors.size() && prime_factors[i]<temp;i++){
+                    if(temp+prime_factors[i] <=T && temp%prime_factors[i] == 0 && !visited[temp+prime_factors[i]]){
                         bfs_queue.push(temp+prime_factors[i]);
+						visited[temp+prime_factors[i]] = true;
                     }
                 }
             }
@@ -68,9 +83,11 @@ int compute_dist(void){
 int main(){
     //freopen("output.txt","w",stdout);
 	int nr_case = 1;
+	//compute_prime_factors(1005);
+	sieve();
 	cin >> S >> T;
 	while(S+T){
-		compute_prime_factors(S);
+
 		/*for(int i=0;i<prime_factors.size();i++){
             cout << prime_factors[i] << " ";
 
