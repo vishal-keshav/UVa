@@ -10,19 +10,8 @@ using namespace std;
 #define INF 10000000
 
 int T, N, S;
-vector<vector<int> > line;
 vector<vector<bool> > adj_mat;
 vector<bool> is_important;
-
-void create_graph(void){
-	for(int nr_line = 0; nr_line<S; nr_line++){
-		for(int i=1;i<line[nr_line].size();i++){
-			adj_mat[line[nr_line][i-1]][line[nr_line][i]] = true;
-			adj_mat[line[nr_line][i]][line[nr_line][i-1]] = true;
-		}
-	}
-	return;
-}
 
 int important_dist(int s){
     int radius = 0;
@@ -80,7 +69,6 @@ int main(){
 		is_important.resize(N+1, false);
 		adj_mat.clear();
 		adj_mat.resize(N+1, vector<bool>(N+1, false));
-		line.clear();
 		vector<bool> station_seen(N+1, false);
 		for(int i=0;i<S;i++){
 			vector<int> temp_line;
@@ -95,10 +83,12 @@ int main(){
 				}
 				temp_line.push_back(station);
 				cin >> station;
+				if(station){
+					adj_mat[temp_line[temp_line.size()-1]][station] = true;
+					adj_mat[station][temp_line[temp_line.size()-1]] = true;
+				}
 			}
-			line.push_back(temp_line);
 		}
-		create_graph();
 #ifdef DEBUG
 		for(int i=1;i<=N;i++){
 			if(is_important[i]){
