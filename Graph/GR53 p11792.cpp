@@ -5,18 +5,19 @@
 #include <queue>
 
 using namespace std;
-
-//#define DEBUG 1
-#define INF 10000000
+#define INF 1000000
 
 int T, N, S;
-vector<vector<bool> > adj_mat;
-vector<bool> is_important;
+vector<vector<bool> > adj_mat(10005, vector<bool>(10005));
+vector<bool> is_important(10005);
+vector<bool> visited(10005);
 
 int important_dist(int s){
     int radius = 0;
     int dist = 0;
-    vector<bool> visited(N+1, false);
+    visited.clear();
+    visited.resize(N+1, false);
+	//fill(visited.begin(), visited.end(), false);
     queue<int> bfs_queue;
     bfs_queue.push(s);
     bfs_queue.push(-1);
@@ -67,8 +68,9 @@ int main(){
 		cin >> N >> S;
 		is_important.clear();
 		is_important.resize(N+1, false);
+		//fill(is_important.begin(), is_important.end(), false);
 		adj_mat.clear();
-		adj_mat.resize(N+1, vector<bool>(N+1, false));
+		adj_mat.resize(10005, vector<bool>(10005, false));
 		vector<bool> station_seen(N+1, false);
 		for(int i=0;i<S;i++){
 			vector<int> temp_line;
@@ -89,23 +91,6 @@ int main(){
 				}
 			}
 		}
-#ifdef DEBUG
-		for(int i=1;i<=N;i++){
-			if(is_important[i]){
-				cout << i << " ";
-			}
-		}
-		cout << endl;
-		for(int i=1;i<=N;i++){
-			cout << i << ":";
-			for(int j=1;j<=N;j++){
-				if(adj_mat[i][j]){
-					cout << j << " ";
-				}
-			}
-			cout << endl;
-		}
-#endif
 		cout << "Krochanska is in: " << find_agent() << endl;
 	}
 
