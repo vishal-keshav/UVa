@@ -8,7 +8,8 @@ using namespace std;
 #define INF 1000000
 
 int T, N, S;
-vector<vector<bool> > adj_mat(10005, vector<bool>(10005));
+//vector<vector<bool> > adj_mat(10005, vector<bool>(10005));
+vector<vector<int> > adj_list(10005);
 vector<bool> is_important(10005);
 vector<bool> visited(10005);
 
@@ -17,7 +18,6 @@ int important_dist(int s){
     int dist = 0;
     visited.clear();
     visited.resize(N+1, false);
-	//fill(visited.begin(), visited.end(), false);
     queue<int> bfs_queue;
     bfs_queue.push(s);
     bfs_queue.push(-1);
@@ -36,12 +36,18 @@ int important_dist(int s){
             if(is_important[temp]){
                 dist+=radius;
             }
-            for(int i=1;i<=N;i++){
+            /*for(int i=1;i<=N;i++){
                 if(!visited[i] && adj_mat[temp][i]){
                     bfs_queue.push(i);
                     visited[i] = true;
                 }
-            }
+            }*/
+			for(int i=0;i<adj_list[temp].size();i++){
+				if(!visited[adj_list[temp][i]]){
+					bfs_queue.push(adj_list[temp][i]);
+					visited[adj_list[temp][i]] = true;
+				}
+			}
         }
     }
     return dist;
@@ -68,14 +74,18 @@ int main(){
 		cin >> N >> S;
 		is_important.clear();
 		is_important.resize(N+1, false);
-		//fill(is_important.begin(), is_important.end(), false);
-		adj_mat.clear();
-		adj_mat.resize(10005, vector<bool>(10005, false));
+		
+		/*adj_mat.clear();
+		adj_mat.resize(10005, vector<bool>(10005, false));*/
+		for(int i=0;i<=N;i++){
+			adj_list[i].clear();
+		}
 		vector<bool> station_seen(N+1, false);
 		for(int i=0;i<S;i++){
-			vector<int> temp_line;
-			int station;
-			cin >> station;
+			//vector<int> temp_line;
+			int first_station,station;
+			cin >> first_station;
+			station = first_station;
 			while(station){
 				if(station_seen[station]){
 					is_important[station] = true;
@@ -83,11 +93,14 @@ int main(){
 				else{
 					station_seen[station] = true;
 				}
-				temp_line.push_back(station);
+				//temp_line.push_back(station);
 				cin >> station;
 				if(station){
-					adj_mat[temp_line[temp_line.size()-1]][station] = true;
-					adj_mat[station][temp_line[temp_line.size()-1]] = true;
+					/*adj_mat[temp_line[temp_line.size()-1]][station] = true;
+					adj_mat[station][temp_line[temp_line.size()-1]] = true;*/
+					adj_list[first_station].push_back(station);
+					adj_list[station].push_back(first_station);
+					first_station = station;
 				}
 			}
 		}
