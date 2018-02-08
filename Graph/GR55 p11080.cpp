@@ -5,16 +5,23 @@
 
 using namespace std;
 
-int n,e;
+int t,n,e;
+int zero, one;
 vector<vector<int> > adj_list(200);
 vector<int> node_color(200);
 
-bool bicolorable(int node){
+bool guard(int node){
 	bool ret = true;
 	for(int i=0;i<adj_list[node].size();i++){
 		if(node_color[adj_list[node][i]]==-1){
 			node_color[adj_list[node][i]] = 1 - node_color[node];
-			ret = (ret && bicolorable(adj_list[node][i]));
+			if(node_color[node]==0){
+				one++;
+			}
+			else{
+				zero++;
+			}
+			ret = (ret && guard(adj_list[node][i]));
 			if(!ret){
 				return ret;
 			}
@@ -31,9 +38,9 @@ bool bicolorable(int node){
 
 int main(){
     int n1, n2;
-	cin >> n;
-	while(n){
-		cin >> e;
+	cin >> t;
+	while(t--){
+		cin >> n >> e;
 		for(int i=0;i<n;i++){
 			adj_list[i].clear();
 			node_color[i] = -1;
@@ -43,15 +50,29 @@ int main(){
 			adj_list[n1].push_back(n2);
 			adj_list[n2].push_back(n1);
 		}
-		node_color[0] = 0;
-		if(bicolorable(0)){
-			cout << "BICOLORABLE." << endl;
+		int min_guard = 0;
+		bool possible = true;
+		for(int i=0;i<n;i++){
+			if(node_color[i]==-1){
+				zero = 0;
+				one = 1;
+				node_color[i] = 1;
+				possible = possible && guard(i);
+                if(!possible){
+                    break;
+                }
+                else{
+                    min_guard+=min(zero,one);
+                }
+			}
+
+		}
+		if(possible){
+			cout << min_guard << endl;
 		}
 		else{
-			cout << "NOT BICOLORABLE." << endl;
+			cout << -1 << endl;
 		}
-
-		cin >> n;
 	}
 	return 0;
 }
