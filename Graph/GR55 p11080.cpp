@@ -62,7 +62,12 @@ int main(){
                     break;
                 }
                 else{
-                    min_guard+=min(zero,one);
+                    if(zero+one<=1){
+                        min_guard+=1;
+                    }
+                    else{
+                        min_guard+=min(zero,one);
+                    }
                 }
 			}
 
