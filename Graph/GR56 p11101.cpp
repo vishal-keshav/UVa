@@ -22,8 +22,12 @@ int move_y[4] = {0, 1, 0, -1};
 
 bool valid(struct loc l){
 	if(l.x>=0 && l.x<=2000 && l.y>=0 && l.y<=2000){
-		if(city[l.x][l.y]==INT_MAXIMUM || city[l.x][l.y]==0){
+		if(city[l.x][l.y]==INT_MAXIMUM){
 			return true;
+		}
+		else if(city[l.x][l.y]==0){
+            city[l.x][l.y] = 1;
+            return true;
 		}
 	}
 	return false;
@@ -71,7 +75,7 @@ int main(){
 			}
 		}
 		//Clear queue
-		if(!bfs_queue.empty()){
+		while(!bfs_queue.empty()){
 			bfs_queue.pop();
 		}
 		for(int i=0;i<m1;i++){
