@@ -14,7 +14,40 @@ Part 1: construct graph
 Part 2: Apply MST on graph
 */
 
-#define DEBUG 1
+//#define DEBUG 1
+
+/*Union find implemented*/
+vector<int> union_set;
+int nr_sets;
+void init_uf(int n){
+	union_set.clear();
+	union_set.resize(n);
+	for(int i=0;i<n;i++){
+		union_set[i] = i;
+	}
+	nr_sets = n;
+}
+
+int find_head(int i){
+	if(union_set[i]==i){
+		return i;
+	}
+	else{
+		union_set[i] = find_head(union_set[i]);
+		return union_set[i];
+	}
+}
+
+bool is_sameset(int i, int j){
+	return (find_head(i)==find_head(j));
+}
+
+void make_union(int i, int j){
+	if(!is_sameset(i,j)){
+		nr_sets--;
+	}
+	union_set[find_head(i)] = find_head(j);
+}
 
 int move_x[4] = {0,-1,0,1};
 int move_y[4] = {-1,0,1,0};
@@ -68,7 +101,7 @@ void bfs_graph(int node){
                     if(maze_copy[move_cell.first][move_cell.second] == 'A' || maze_copy[move_cell.first][move_cell.second] == 'S'){
                         struct edge temp_edge;
                         temp_edge.coord.first = node;
-                        temp_edge.coord.second = loc_map[temp];
+                        temp_edge.coord.second = loc_map[move_cell];
                         temp_edge.weight = dist;
                         edges.push_back(temp_edge);
                     }
@@ -80,7 +113,24 @@ void bfs_graph(int node){
 	}
 }
 
+int mst_weight(void){
+	int ret = 0;
+	init_uf(alien_loc.size());
+	auto sort_func = [](struct edge e1, struct edge e2)->bool {
+		return (e1.weight < e2.weight);
+	};
+	sort(edges.begin(), edges.end(), sort_func);
+	for(int i=0;i<edges.size();i++){
+		if(!is_sameset(edges[i].coord.first, edges[i].coord.second)){
+			make_union(edges[i].coord.first, edges[i].coord.second);
+			ret+=edges[i].weight;
+		}
+	}
+	return ret;
+}
+
 int main(){
+    //freopen("output.txt","w",stdout);
     string line;
     pair<int, int> temp;
 	cin >> N;
@@ -88,6 +138,7 @@ int main(){
 		cin >> x >> y;
 		maze.clear();
 		alien_loc.clear();
+		edges.clear();
 		cin.ignore();
 		loc_map.clear();
 		int index = 0;
@@ -116,7 +167,7 @@ int main(){
             cout << maze[i] << endl;
         }
         for(int i=0;i<alien_loc.size();i++){
-            cout << alien_loc[i].first << " " << alien_loc[i].second << endl;
+            cout << alien_loc[i].first << " " << alien_loc[i].second << " " <<loc_map[alien_loc[i]] << endl;
         }
 
 #endif // DEBUG
@@ -127,10 +178,11 @@ int main(){
 		//bfs_graph(0);
 #ifdef DEBUG
 		for(int i=0;i<edges.size();i++){
-			cout << edges[i].weight << endl;
+			cout << edges[i].weight << " " << edges[i].coord.first << " " << edges[i].coord.second << endl;
 		}
 #endif
         //find mst
+		cout << mst_weight() << endl;
 	}
 	return 0;
 }
