@@ -7,20 +7,20 @@
 
 using namespace std;
 
-float n,r;
+double n,r;
 int nr_states;
-float road_len, rail_len;
-vector<pair<float, float> > city;
+double road_len, rail_len;
+vector<pair<double, double> > city;
 
 struct edge{
 	pair<int, int> e;
-	float w;
+	double w;
 };
 
 vector<struct edge> edges;
 
-float calculate_dist(pair<float, float> a, pair<float, float> b){
-	float ret = (a.first - b.first)*(a.first - b.first);
+double calculate_dist(pair<double, double> a, pair<double, double> b){
+	double ret = (a.first - b.first)*(a.first - b.first);
 	ret+= (a.second-b.second)*(a.second-b.second);
 	return sqrt(ret);
 }
@@ -98,7 +98,7 @@ void compute(void){
 int main(){
     //freopen("output.txt","w",stdout);
 	int T, nr_case=1;
-	pair<float, float> temp;
+	pair<double, double> temp;
 	cin >> T;
 	while(T--){
 		cin >> n >> r;
